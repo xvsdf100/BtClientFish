@@ -61,6 +61,12 @@ private:
 	void SendUnChoke();
 
 private:
+    //读取数据
+    bool ReadPacket();
+
+    //写数据
+    bool WritePacket();
+
 	//读取接收到Packet
 	void ProcessPacket();
 
@@ -72,6 +78,11 @@ private:
 	int HandleCmdMsg();
 
 	int HandleBitfit(uint_32 len);
+
+private:
+    uint_32 Write(BaseBuffer* buffer);
+
+    void Close();
 
 private:
 	bool		m_isConnect;

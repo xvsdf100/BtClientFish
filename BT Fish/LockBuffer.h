@@ -13,6 +13,8 @@ public:
 
 	virtual uint_32 Write(void* pData,uint_32 DataSize,uint_32 WriteSize);
 
+    virtual uint_32 Remove(uint_32 begin,uint_32 size);
+
 private:
 	CRITICAL_SECTION	m_Section;
 };

@@ -106,3 +106,19 @@ uint_32 BaseBuffer::GetCapacity()
 	return (m_Size - m_Pos);
 }
 
+//µ½Ê±ºòÌæ»»µô
+uint_32 BaseBuffer::Remove( uint_32 begin,uint_32 size )
+{
+    uint_32 len = 0;
+    uint_32 capacity = (m_Pos - begin);
+    if(begin < m_Pos)
+    {
+        uint_32 realSize = size > capacity ? capacity : size;
+        m_Pos -= realSize;
+        memmove_s(m_Data + begin ,m_Size,m_Data + begin + realSize,m_Pos);
+        len = realSize;
+        m_Pos -= realSize;
+    }
+    return len;
+}
+

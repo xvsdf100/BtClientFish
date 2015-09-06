@@ -365,6 +365,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="utility"
+				>
+				<File
+					RelativePath=".\Utility.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

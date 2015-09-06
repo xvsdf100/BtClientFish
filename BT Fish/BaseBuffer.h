@@ -18,9 +18,14 @@ public:
 
 	virtual uint_32 Write(void* pData,uint_32 DataSize,uint_32 WriteSize);
 
-	uint_32				GetDataSize()	{return m_Pos;}
+    virtual uint_32 Remove(uint_32 begin,uint_32 size);
+
+	uint_32		GetDataSize()	{return m_Pos;}
 
 	const byte*			GetData()	{return m_Data;}
+
+    
+
 private:
 	bool isNeedResizeBuffer(uint_32 uSize);
 

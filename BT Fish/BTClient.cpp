@@ -2,8 +2,9 @@
 #include "BTClient.h"
 #include "TcpConnetorImp.h"
 #include "StringUtility.h"
+#include "Utility.h"
 
-CBTClientNet::CBTClientNet(NetType type):m_Protocal(StringUtility::FromHexString((const uint_8*)"907ec70324eb240e6490978e5346bee0805047bb",40),10,1024*16)
+CBTClientNet::CBTClientNet(NetType type):m_Protocal(StringUtility::FromHexString((const uint_8*)"98301336ec698450419c5722f46819a155cc8e0d",40),10,1024*16)
 {
 	m_isConnect = false;
 	m_pConnect = NULL;
@@ -40,8 +41,7 @@ void CBTClientNet::SendHandle()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeHandle(Buffer);
-	m_WriteBuffer.WriteBuffer(Buffer);
-	m_pConnect->Send(m_WriteBuffer.GetData(),m_WriteBuffer.GetDataSize());
+    Write(&Buffer);
 }
 
 void CBTClientNet::SendBitFiled()
@@ -54,7 +54,7 @@ void CBTClientNet::SendRequest()
 	CommBuffer Buffer;
 	m_Protocal.MakeRequest(0,Buffer);
 	m_WriteBuffer.WriteBuffer(Buffer);
-	m_pConnect->Send(m_WriteBuffer.GetData(),m_WriteBuffer.GetDataSize());
+	Write(&Buffer);
 }
 
 void CBTClientNet::SendInteresed()
@@ -68,7 +68,7 @@ void CBTClientNet::SendNoInteresed()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeInterested(false,Buffer);
-	m_WriteBuffer.WriteBuffer(Buffer);
+	Write(&Buffer);
 }
 
 void CBTClientNet::SendChoke()
@@ -83,7 +83,6 @@ void CBTClientNet::SendUnChoke()
 
 void CBTClientNet::Run()
 {
-	static bool isConnect = false;
 	while (true)
 	{
 
@@ -106,32 +105,18 @@ void CBTClientNet::Run()
 			else
 			{
 				//连接成功
-				isConnect = true;
+				m_isConnect = true;
 				SendHandle();
 				continue;
 			}
 		}
 
-		if(!isConnect)	continue;
+		if(!m_isConnect)	continue;
 
-		byte buf[100];
-		int ret = m_pConnect->Recv((byte*)buf,100);
-		if(ret <= 0)
-		{
-			ret = WSAGetLastError();
-			if(ret != WSAEWOULDBLOCK)
-			{
-				//发生错误跳出
-				AfxMessageBox(_T("Client error"));
-				break;
-			}
-		}
-		else
-		{
-			m_ReadBuffer.Write((void*)buf,100,ret);
-		}
+        //如果有数据就发送数据
+        if(!WritePacket())   {break;}
 
-		ProcessPacket();
+        if(!ReadPacket())    {break;}
 	}
 }
 
@@ -218,7 +203,68 @@ int CBTClientNet::HandleBitfit(uint_32 len)
 
 		m_BtState = WaitPiece;
 
-		SendRequest();
+		//SendRequest();
+        
 	}
 	return 0;
+}
+
+uint_32 CBTClientNet::Write( BaseBuffer* buffer )
+{
+    assert(NULL != buffer);
+    return m_WriteBuffer.Write((byte*)buffer->GetData(),buffer->GetDataSize(),buffer->GetDataSize());
+}
+
+bool CBTClientNet::ReadPacket()
+{
+    const uint_32 bufLen = 1024*8;
+    byte buf[bufLen];
+    int ret = m_pConnect->Recv((byte*)buf,bufLen);
+    if(ret <= 0)
+    {
+        ret = WSAGetLastError();
+        if(ret != WSAEWOULDBLOCK)
+        {
+            //发生错误跳出
+            AfxMessageBox(_T("Client error"));
+            this->Close();
+            return false;
+        }
+    }
+    else
+    {
+        m_ReadBuffer.Write((void*)buf,100,ret);
+    }
+
+    ProcessPacket();
+    return true;
+}
+
+bool CBTClientNet::WritePacket()
+{
+    if(m_WriteBuffer.GetDataSize()&& m_isConnect)
+    {
+        //发送数据包
+        int len = (uint_32)m_pConnect->Send(m_WriteBuffer.GetData(),m_WriteBuffer.GetDataSize());
+        if(len == SOCKET_ERROR)
+        {
+            if(WSAEWOULDBLOCK == WSAGetLastError())
+            {
+                this->Close();
+                return false;
+            }
+        }
+        else
+        {
+            m_WriteBuffer.Remove(0,len);
+        }
+    }
+    return true;
+}
+
+void CBTClientNet::Close()
+{
+    m_pConnect->Close();
+    SAFEDEL(m_pConnect);
+    m_isConnect = false;
 }

@@ -27,3 +27,11 @@ uint_32 LockBuffer::Write(void* pData,uint_32 DataSize,uint_32 WriteSize)
 	LeaveCriticalSection(&m_Section);
 	return ret;
 }
+
+uint_32 LockBuffer::Remove( uint_32 begin,uint_32 size )
+{
+    EnterCriticalSection(&m_Section);
+    return __super::Remove(begin,size);
+    LeaveCriticalSection(&m_Section);
+}
+
