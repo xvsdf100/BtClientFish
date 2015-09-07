@@ -301,6 +301,18 @@
 					</Filter>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Bencode"
+				>
+				<File
+					RelativePath=".\SeedResolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SeedResolver.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Base"
