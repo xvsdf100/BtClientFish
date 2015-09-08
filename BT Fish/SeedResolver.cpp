@@ -430,7 +430,7 @@ char* CSeedResolver::ReadSeedFile()
 	return pBuffer;
 }
 
-BOOL CSeedResolver::ParseBecodeDic(cons std::string& BencodeString)
+BOOL CSeedResolver::ParseBecodeDic(const std::string& BencodeString)
 {
 	char* pShadowBuffer = (char*)BencodeString.c_str();
 
@@ -441,10 +441,8 @@ BOOL CSeedResolver::ParseBecodeDic(cons std::string& BencodeString)
 	}
 	catch (int)
 	{
-		SAFE_RETURN(pBuffer, FALSE);//种子文件无法解析
+		return FALSE;
 	}
-
-	SAFE_CLEAN(pBuffer);
 
 	//种子文件的根一定是个BC_DICT类型
 	if(Root.Type != BC_DICT) return FALSE;

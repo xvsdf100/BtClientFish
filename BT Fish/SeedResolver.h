@@ -173,7 +173,7 @@ public:
 	BOOL Resolve();
 
 	//Ôö¼Ó×Ö·û´®½âÎö
-	BOOL ParseBecodeDic(cons std::string& BencodeString);
+	BOOL ParseBecodeDic(const std::string& BencodeString);
 
 
 };
