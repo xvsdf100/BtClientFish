@@ -157,7 +157,7 @@ HCURSOR CBTFishDlg::OnQueryDragIcon()
 void CBTFishDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if(m_Client.ConnectTo("127.0.0.1",23420))
+	if(m_Client.ConnectTo("127.0.0.1",11038))
 	{;
 		m_Client.CreateThread();
 		AfxMessageBox(_T("连接成功"));

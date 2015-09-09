@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BTBitmap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -225,6 +229,10 @@
 			</File>
 			<File
 				RelativePath=".\BT FishDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BTBitmap.h"
 				>
 			</File>
 			<File
@@ -312,6 +320,10 @@
 					RelativePath=".\SeedResolver.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Bitmap"
+				>
 			</Filter>
 		</Filter>
 		<Filter

@@ -11,6 +11,7 @@
 #include "BaseThread.h"
 #include "LockBuffer.h"
 #include "BTProtocal.h"
+#include "BTBitmap.h"
 
 class CBTClientNet:public BaseThread
 {
@@ -93,6 +94,8 @@ private:
 	BTProtocal	m_Protocal;
 	BTNetState	m_BtState;
 	WSAEVENT	m_NetEvent;
+	CBTBitmap	m_RemoteBitmap;
+	CBTBitmap	m_LocalBitmap;
 
 private:
 	CBTClientNet(CBTClientNet&);

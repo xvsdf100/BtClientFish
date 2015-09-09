@@ -4,7 +4,7 @@
 #include "StringUtility.h"
 #include "Utility.h"
 
-CBTClientNet::CBTClientNet(NetType type):m_Protocal(StringUtility::FromHexString((const uint_8*)"98301336ec698450419c5722f46819a155cc8e0d",40),10,1024*16)
+CBTClientNet::CBTClientNet(NetType type):m_Protocal(StringUtility::FromHexString((const uint_8*)"907ec70324eb240e6490978e5346bee0805047bb",40),10,1024*16)
 {
 	m_isConnect = false;
 	m_pConnect = NULL;
@@ -53,7 +53,6 @@ void CBTClientNet::SendRequest()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeRequest(0,Buffer);
-	m_WriteBuffer.WriteBuffer(Buffer);
 	Write(&Buffer);
 }
 
@@ -61,7 +60,7 @@ void CBTClientNet::SendInteresed()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeInterested(true,Buffer);
-	m_WriteBuffer.WriteBuffer(Buffer);
+	Write(&Buffer);
 }
 
 void CBTClientNet::SendNoInteresed()
@@ -99,7 +98,6 @@ void CBTClientNet::Run()
 			if ( pEvents.iErrorCode[ FD_CONNECT_BIT ] != 0 )
 			{
 				closesocket((SOCKET)m_pConnect->GetHandle());
-				AfxMessageBox(_T("net disconnect"));
 				break;
 			}
 			else
@@ -203,7 +201,9 @@ int CBTClientNet::HandleBitfit(uint_32 len)
 
 		m_BtState = WaitPiece;
 
-		//SendRequest();
+		//test
+		//默认值，测试使用
+		SendRequest();
         
 	}
 	return 0;
@@ -245,10 +245,11 @@ bool CBTClientNet::WritePacket()
     if(m_WriteBuffer.GetDataSize()&& m_isConnect)
     {
         //发送数据包
+
         int len = (uint_32)m_pConnect->Send(m_WriteBuffer.GetData(),m_WriteBuffer.GetDataSize());
         if(len == SOCKET_ERROR)
         {
-            if(WSAEWOULDBLOCK == WSAGetLastError())
+            if(WSAEWOULDBLOCK != WSAGetLastError())
             {
                 this->Close();
                 return false;
