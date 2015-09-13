@@ -30,8 +30,14 @@ public:
 		WaitPiece,		//等待piece
 	};
 
+	enum ChokeStatus
+	{
+		UnChoke,
+		CHoked,
+	};
+
 public:
-	CBTClientNet(NetType type);
+	CBTClientNet(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
 	~CBTClientNet();
 
 	bool ConnectTo(std::string ip,int port);
@@ -80,10 +86,28 @@ private:
 
 	int HandleBitfit(uint_32 len);
 
+	int HandleUnchoke(uint_32 len);
+
+	//处理Piece
+	int HandlePiece(uint_32 len);
+
 private:
     uint_32 Write(BaseBuffer* buffer);
 
     void Close();
+
+	void InitLocalBitmap();
+
+private:
+	//文件出列测试
+	bool InitDownFile();
+
+	bool WriteDataFile(int_64 pos,int_32 len,const byte* data);
+
+	//全部写0写初始化数据
+	bool WriteInitData();
+
+	void CloseFile();
 
 private:
 	bool		m_isConnect;
@@ -96,6 +120,12 @@ private:
 	WSAEVENT	m_NetEvent;
 	CBTBitmap	m_RemoteBitmap;
 	CBTBitmap	m_LocalBitmap;
+	ChokeStatus	m_SelfChokeStatus;
+	ChokeStatus	m_PeerChokeStatus;
+	uint_64		m_FileSize;
+
+private:
+	CFile		m_File;
 
 private:
 	CBTClientNet(CBTClientNet&);

@@ -1,6 +1,6 @@
 #ifndef DATATYPE_H
 #define DATATYPE_H
-
+#include <vector>
 //是否加一个宏开关设置一下
 
 #define NULL 0
@@ -14,4 +14,6 @@ typedef int int_32;
 typedef unsigned int uint_32;
 typedef long long int_64;
 typedef unsigned long long uint_64;
+
+typedef std::vector<byte>	ByteArray;
 #endif

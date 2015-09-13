@@ -397,6 +397,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="DataManager"
+				>
+				<Filter
+					Name="FileCache"
+					>
+					<Filter
+						Name="File"
+						>
+					</Filter>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

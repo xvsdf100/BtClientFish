@@ -5,6 +5,7 @@
 #pragma once
 
 #include "BTClient.h"
+#include "afxcmn.h"
 
 // CBTFishDlg 对话框
 class CBTFishDlg : public CDialog
@@ -21,7 +22,15 @@ public:
 
 
 private:
-	CBTClientNet m_Client;
+	//获取界面设置的配置信息
+	void GetPeerInfoFormUI();
+
+	//设置UI初始化值
+	void InitUI();
+
+
+private:
+	CBTClientNet* m_pClient;
 // 实现
 protected:
 	HICON m_hIcon;
@@ -34,4 +43,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedBtnStop();
+private:
+	int m_Port;
+	CString m_InfoHash;
+	CString m_InfoPeerConfig;
+	CIPAddressCtrl m_IPCCtrl;
+	CString	m_PeerIP;
+	UINT m_PieceCount;
 };

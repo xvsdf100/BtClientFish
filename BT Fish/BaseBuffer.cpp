@@ -117,8 +117,8 @@ uint_32 BaseBuffer::Remove( uint_32 begin,uint_32 size )
         m_Pos -= realSize;
         memmove_s(m_Data + begin ,m_Size,m_Data + begin + realSize,m_Pos);
         len = realSize;
-        m_Pos -= realSize;
     }
     return len;
 }
+
 

@@ -21,12 +21,32 @@ void CommBuffer::WriteInt8(int_8 data)
 	Write(&data,sizeof(data),sizeof(data));
 }
 
+void CommBuffer::ReadUInt8(uint_8& data,bool bRemove /*= true*/,uint_32 pos /*= 0*/)
+{
+	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
+}
+
+void CommBuffer::WriteUInt8(uint_8 data)
+{
+	Write(&data,sizeof(data),sizeof(data));
+}
+
 void CommBuffer::ReadInt16(int_16& data,bool bRemove,uint_32 pos)
 {
 	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
 }
 
 void CommBuffer::WriteInt16(int_16 data)
+{
+	Write(&data,sizeof(data),sizeof(data));
+}
+
+void CommBuffer::ReadUInt16(uint_16& data,bool bRemove /*= true*/,uint_32 pos /*= 0*/)
+{
+	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
+}
+
+void CommBuffer::WriteUInt16(uint_16 data)
 {
 	Write(&data,sizeof(data),sizeof(data));
 }
@@ -41,12 +61,33 @@ void CommBuffer::WriteInt32(int_32 data)
 	Write(&data,sizeof(data),sizeof(data));
 }
 
+void CommBuffer::ReadUInt32(uint_32& data,bool bRemove /*= true*/,uint_32 pos /*= 0*/)
+{
+	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
+}
+
+void CommBuffer::WriteUInt32(uint_32 data)
+{
+	Write(&data,sizeof(data),sizeof(data));
+}
+
 void CommBuffer::ReadInt64(int_64& data,bool bRemove,uint_32 pos)
 {
 	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
 }
 
+
 void CommBuffer::WriteInt64(int_64 data)
+{
+	Write(&data,sizeof(data),sizeof(data));
+}
+
+void CommBuffer::ReadUInt64(uint_64& data,bool bRemove /*= true*/,uint_32 pos /*= 0*/)
+{
+	Read(&data,sizeof(data),sizeof(data),bRemove,pos);
+}
+
+void CommBuffer::WriteUInt64(uint_64 data)
 {
 	Write(&data,sizeof(data),sizeof(data));
 }
@@ -84,3 +125,10 @@ void CommBuffer::WriteBuffer(CommBuffer& buffer)
 	//Read((void*)buffer.GetData(),buffer.GetDataSize(),buffer.GetDataSize());
 	Write((void*)buffer.GetData(),buffer.GetDataSize(),buffer.GetDataSize());
 }
+
+
+
+
+
+
+

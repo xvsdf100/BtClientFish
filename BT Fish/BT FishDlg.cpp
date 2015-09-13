@@ -50,7 +50,11 @@ END_MESSAGE_MAP()
 
 CBTFishDlg::CBTFishDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CBTFishDlg::IDD, pParent)
-	,m_Client(CBTClientNet::TCP)
+	, m_pClient(NULL)
+	, m_Port(0)
+	, m_InfoHash(_T(""))
+	, m_InfoPeerConfig(_T(""))
+	, m_PieceCount(1)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -58,6 +62,11 @@ CBTFishDlg::CBTFishDlg(CWnd* pParent /*=NULL*/)
 void CBTFishDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_PORT, m_Port);
+	DDX_Text(pDX, IDC_EDIT_INFOHASH, m_InfoHash);
+	DDX_Text(pDX, IDC_EDIT_PEERCONFIG, m_InfoPeerConfig);
+	DDX_Control(pDX, IDC_IPADDRESS_PEER, m_IPCCtrl);
+	DDX_Text(pDX, IDC_EDIT_PIECECOUNT, m_PieceCount);
 }
 
 BEGIN_MESSAGE_MAP(CBTFishDlg, CDialog)
@@ -66,6 +75,7 @@ BEGIN_MESSAGE_MAP(CBTFishDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDOK, &CBTFishDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_BTN_STOP, &CBTFishDlg::OnBnClickedBtnStop)
 END_MESSAGE_MAP()
 
 
@@ -101,6 +111,7 @@ BOOL CBTFishDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	InitUI();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -157,16 +168,46 @@ HCURSOR CBTFishDlg::OnQueryDragIcon()
 void CBTFishDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if(m_Client.ConnectTo("127.0.0.1",11038))
-	{;
-		m_Client.CreateThread();
-		AfxMessageBox(_T("连接成功"));
-	}
-	else
+	GetPeerInfoFormUI();
+	std::string ip = CW2A(m_PeerIP);
+	std::string InfoHash = CW2A(m_InfoHash);
+	if(NULL == m_pClient)
 	{
-		AfxMessageBox(_T("连接失败"));
+		//test
+		m_pClient = new CBTClientNet(CBTClientNet::TCP,InfoHash,1,290);
+		if(!m_pClient->ConnectTo(ip,m_Port))
+		{
+			AfxMessageBox(_T("连接失败"));
+		}
+		else
+		{
+			m_pClient->CreateThread();
+		}
 	}
 
 
+}
 
+void CBTFishDlg::GetPeerInfoFormUI()
+{
+	UpdateData();
+	//配置文件的解析
+	m_IPCCtrl.GetWindowText(m_PeerIP);
+	
+}
+
+
+void CBTFishDlg::InitUI()
+{
+	m_IPCCtrl.SetWindowText(_T("127.0.0.1"));
+	m_Port = 11038;
+	m_InfoHash = _T("907ec70324eb240e6490978e5346bee0805047bb");
+	UpdateData(FALSE);
+	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
+}
+
+void CBTFishDlg::OnBnClickedBtnStop()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//做关闭处理
 }
