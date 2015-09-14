@@ -6,6 +6,8 @@
 /* 联系：littlefish@qq.com												*/
 /************************************************************************/
 
+//tip:这个工具抛弃种子，这样就可以任意设置配置,目前只支持同时只能从一个peer下载
+
 #include "IConnection.h"
 #include <string>
 #include "BaseThread.h"
@@ -35,6 +37,15 @@ public:
 		UnChoke,
 		CHoked,
 	};
+
+    typedef struct tagRequestDataBlock
+    {
+        uint_32 index;
+        uint_32 begin;
+        uint_32 len;
+    }RequestDataBlock;
+
+    typedef std::vector<RequestDataBlock>    RequestDataBlockArray;
 
 public:
 	CBTClientNet(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
@@ -109,20 +120,30 @@ private:
 
 	void CloseFile();
 
+    bool isDownComplete();
+
+    //获取需要下载的Piece的数据
+    bool GetWantDownPiece(uint_32& index,uint_32& begin,uint_32& len);
+
+    //检测是否存在
+
 private:
-	bool		m_isConnect;
-	IConnect*	m_pConnect;
-	NetType		m_Type;
-	LockBuffer	m_WriteBuffer;
-	LockBuffer	m_ReadBuffer;
-	BTProtocal	m_Protocal;
-	BTNetState	m_BtState;
-	WSAEVENT	m_NetEvent;
-	CBTBitmap	m_RemoteBitmap;
-	CBTBitmap	m_LocalBitmap;
-	ChokeStatus	m_SelfChokeStatus;
-	ChokeStatus	m_PeerChokeStatus;
-	uint_64		m_FileSize;
+	bool		            m_isConnect;
+	IConnect*	            m_pConnect;
+	NetType		            m_Type;
+	LockBuffer	            m_WriteBuffer;
+	LockBuffer	            m_ReadBuffer;
+	BTProtocal	            m_Protocal;
+	BTNetState	            m_BtState;
+	WSAEVENT	            m_NetEvent;
+	CBTBitmap	            m_RemoteBitmap;
+	CBTBitmap	            m_LocalBitmap;
+	ChokeStatus	            m_SelfChokeStatus;
+	ChokeStatus	            m_PeerChokeStatus;
+	uint_64		            m_FileSize;
+    uint_32                 m_PieceCount;
+    RequestDataBlockArray   m_RequestDataBlockArrayIng;         //请求中
+    RequestDataBlockArray   m_RequestDataBlockArrayed;          //已经下载，但还没有组成一个完成的Piece
 
 private:
 	CFile		m_File;

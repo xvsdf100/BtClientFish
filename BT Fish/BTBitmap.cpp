@@ -34,3 +34,13 @@ void CBTBitmap::Add(uint_32 index)
 		m_Bitmap.push_back(index);
 	}
 }
+
+bool CBTBitmap::isHave( uint_32 index )
+{
+    if(m_Bitmap.end() == std::find(m_Bitmap.begin(),m_Bitmap.end(),index))
+    {
+        return false;
+    }
+
+    return true;
+}

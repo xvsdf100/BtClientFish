@@ -13,7 +13,7 @@ CBTClientNet::CBTClientNet(NetType type,const std::string& InfoHash,const int_32
 	m_BtState = WaitHand;
 	m_SelfChokeStatus = CHoked;
 	m_PeerChokeStatus = CHoked;
-
+    m_PieceCount = pieceCount;
 	if(m_Type == TCP)
 	{
 		m_pConnect = new CTcpConnectImp();
@@ -104,11 +104,14 @@ void CBTClientNet::Run()
 			if ( pEvents.iErrorCode[ FD_CONNECT_BIT ] != 0 )
 			{
 				closesocket((SOCKET)m_pConnect->GetHandle());
+                m_isConnect = false;
+                AfxMessageBox(L"连接断开");
 				break;
 			}
 			else
 			{
 				//连接成功
+                TRACE("[CBTClientNet::Run] 连接成功 发送握手消息\n");
 				m_isConnect = true;
 				SendHandle();
 				continue;
@@ -124,6 +127,7 @@ void CBTClientNet::Run()
 			break;
 		}
 
+        //如果没有读取到新的数据就不需要读取
         if(!ReadPacket())
 		{
 			AfxMessageBox(_T("read client disconnect"));
@@ -134,21 +138,25 @@ void CBTClientNet::Run()
 
 void CBTClientNet::ProcessPacket()
 {
-	if(m_ReadBuffer.GetDataSize())
-	{
-		switch(m_BtState)
-		{
-		case WaitHand:
-				//处理握手数据包
-			HandleHandMsg();
-				break;
-		case WaitMsg:
-		case WaitPiece:
-				//处理消息数据包
-			HandleCmdMsg();
-			break;
-		}
-	}
+
+    while (m_ReadBuffer.GetDataSize())
+    {
+        int ret = 0;
+        switch(m_BtState)
+        {
+        case WaitHand:
+            //处理握手数据包
+            ret = HandleHandMsg();
+            break;
+        case WaitMsg:
+        case WaitPiece:
+            //处理消息数据包
+            ret = HandleCmdMsg();
+            break;
+        }
+
+        if(1 != ret)    break;
+    }
 }
 
 int CBTClientNet::HandleHandMsg()
@@ -170,24 +178,26 @@ int CBTClientNet::HandleHandMsg()
 		
 		m_BtState = WaitMsg;
 	}
-	return 0;
+
+	return 1;
 }
 
 int CBTClientNet::HandleCmdMsg()
 {
 	int ret = 0;
 	uint_8 MinCmdSize = 4 + 1; //最小命令的长度 len + id
-	if(m_ReadBuffer.GetDataSize() >= MinCmdSize)
+    uint_32 DataSize = m_ReadBuffer.GetDataSize();
+	if(DataSize >= MinCmdSize)
 	{
 		int_32 len = 0;
 		int_8 id;
 		m_ReadBuffer.ReadInt32(len,false);
 		len = ntohl(len);
 		m_ReadBuffer.ReadInt8(id,false,sizeof(len));
-		TRACE("MSG ID:%d",id);
+        TRACE("[CBTClientNet::HandleCmdMsg] MSG ID:%d ReadBuffer:%d CmdLen:%d\n",id,DataSize,len);
 
 		//检测是否为一个完整的数据包
-		if(m_ReadBuffer.GetDataSize() >= (len + sizeof(len)))
+		if(DataSize >= (len + sizeof(len)))
 		{
 			switch(id)
 			{
@@ -200,6 +210,9 @@ int CBTClientNet::HandleCmdMsg()
 			case BTProtocal::UNCHOKE:
 				ret = HandleUnchoke(len);
 				break;
+            default:
+                AfxMessageBox(_T("协议未知报错"));
+                break;
 			}
 		}
 	}
@@ -234,7 +247,8 @@ int CBTClientNet::HandleBitfit(uint_32 len)
 			SendInteresed();
 		}
 	}
-	return 0;
+
+	return 1;
 }
 
 
@@ -266,7 +280,7 @@ int CBTClientNet::HandlePiece(uint_32 len)
 	{
 		//现在按循序请求
 		WriteDataFile(0,DataArray.size(),(const byte*)&(*DataArray.begin()));
-		return true;
+		return 1;
 	}
 	return -1;
 }
@@ -281,21 +295,27 @@ bool CBTClientNet::ReadPacket()
 {
     const uint_32 bufLen = 1024*8;
     byte buf[bufLen];
-    int ret = m_pConnect->Recv((byte*)buf,bufLen);
-    if(ret <= 0)
+
+    while(TRUE)
     {
-        ret = WSAGetLastError();
-        if(ret != WSAEWOULDBLOCK)
+        int ret = m_pConnect->Recv((byte*)buf,bufLen);
+        if(ret <= 0)
         {
-            //发生错误跳出
-            AfxMessageBox(_T("Client error"));
-            this->Close();
-            return false;
+            ret = WSAGetLastError();
+            if(ret != WSAEWOULDBLOCK)
+            {
+                //发生错误跳出
+                AfxMessageBox(_T("Client error"));
+                this->Close();
+                return false;
+            }
+
+            break;
         }
-    }
-    else
-    {
-        m_ReadBuffer.Write((void*)buf,100,ret);
+        else
+        {
+            m_ReadBuffer.Write((void*)buf,bufLen,ret);
+        }
     }
 
     ProcessPacket();
@@ -308,12 +328,12 @@ bool CBTClientNet::WritePacket()
     {
         //发送数据包
 		int buffsize = m_WriteBuffer.GetDataSize();
-		TRACE("buffsize:%d",buffsize);
+		TRACE("[CBTClientNet::WritePacket] buffsize:%d\n",buffsize);
         int len = (uint_32)m_pConnect->Send(m_WriteBuffer.GetData(),m_WriteBuffer.GetDataSize());
         if(len == SOCKET_ERROR)
         {
 			BOOL lastError = WSAGetLastError();
-			TRACE("lastError:%d",lastError);
+			TRACE("WritePacket lastError:%d",lastError);
             if(WSAEWOULDBLOCK != WSAGetLastError())
             {
                 this->Close();
@@ -342,12 +362,13 @@ void CBTClientNet::InitLocalBitmap()
 
 bool CBTClientNet::InitDownFile()
 {
-	if(m_File.Open(_T("D:\\test.txt"),CFile::modeWrite))
-	{
-		return true;
-	}
+    CFileException e;
+    if(!m_File.Open(_T("D:\\testMyPiece.txt"),CFile::modeCreate | CFile::modeWrite,&e))
+    {
+        return false;
+    }
 
-	return false;
+	return true;
 }
 
 bool CBTClientNet::WriteDataFile(int_64 pos,int_32 len,const byte* data)
@@ -358,7 +379,7 @@ bool CBTClientNet::WriteDataFile(int_64 pos,int_32 len,const byte* data)
 	//占时不填充
 	//ULONGLONG pos = m_File.Seek(pos,CFile::begin);
 
-	if(pos > 0 )
+	//if(pos > 0 )
 	{
 		m_File.Write(data,len);
 
@@ -376,4 +397,23 @@ bool CBTClientNet::WriteInitData()
 void CBTClientNet::CloseFile()
 {
 	m_File.Close();
+}
+
+bool CBTClientNet::isDownComplete()
+{
+    return m_LocalBitmap.GetCount() == m_PieceCount;
+}
+
+bool CBTClientNet::GetWantDownPiece( uint_32& index,uint_32& begin,uint_32& len )
+{
+    //检测是否已经在请求当中
+    for(uint_32 i = 0; i < m_PieceCount; i++)
+    {
+        if(!m_LocalBitmap.isHave(i))
+        {
+            //检测获取
+
+        }
+    }
+    return true;
 }

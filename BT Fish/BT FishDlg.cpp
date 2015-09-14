@@ -201,7 +201,7 @@ void CBTFishDlg::InitUI()
 {
 	m_IPCCtrl.SetWindowText(_T("127.0.0.1"));
 	m_Port = 11038;
-	m_InfoHash = _T("907ec70324eb240e6490978e5346bee0805047bb");
+	m_InfoHash = _T("3ed97dd258f44434ad78dc422606887c90020046");
 	UpdateData(FALSE);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
 }

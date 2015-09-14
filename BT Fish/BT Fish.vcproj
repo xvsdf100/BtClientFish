@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DownDataManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -233,6 +237,10 @@
 			</File>
 			<File
 				RelativePath=".\BTBitmap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DownDataManager.h"
 				>
 			</File>
 			<File
@@ -323,6 +331,10 @@
 			</Filter>
 			<Filter
 				Name="Bitmap"
+				>
+			</Filter>
+			<Filter
+				Name="DownDataManager"
 				>
 			</Filter>
 		</Filter>

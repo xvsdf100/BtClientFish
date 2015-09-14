@@ -81,7 +81,10 @@ bool BTProtocal::DecodePiecePacket(CommBuffer* pBuffer,uint_32& dataLength,uint_
 			{
 				pBuffer->ReadUInt32(index);
 				index = ntohl(index);
+                pBuffer->ReadUInt32(begin);
+                begin = ntohl(begin);
 				block.resize(dataLength);
+                TRACE("[BTProtocal::DecodePiecePacket] Len:%d Index:%d blockLen:%d\n",len,index,dataLength);
 				pBuffer->Read(&(*block.begin()),block.size(),block.size());
 				return true;
 			}

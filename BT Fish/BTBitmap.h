@@ -22,6 +22,8 @@ public:
 
 	void Clear()	{m_Bitmap.clear();}
 
+    bool isHave(uint_32 index);
+
 private:
 	BitmapArray	m_Bitmap;
 };
