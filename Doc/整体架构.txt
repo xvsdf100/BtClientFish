@@ -1,4 +1,4 @@
 							BT客户端
 		BTPeer数据交互		种子解析	Tracker通信		日志 
-文件炒作    BT下载	 BT上传	
+	    BT下载	 BT上传	
 	
