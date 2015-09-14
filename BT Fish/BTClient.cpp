@@ -399,21 +399,3 @@ void CBTClientNet::CloseFile()
 	m_File.Close();
 }
 
-bool CBTClientNet::isDownComplete()
-{
-    return m_LocalBitmap.GetCount() == m_PieceCount;
-}
-
-bool CBTClientNet::GetWantDownPiece( uint_32& index,uint_32& begin,uint_32& len )
-{
-    //检测是否已经在请求当中
-    for(uint_32 i = 0; i < m_PieceCount; i++)
-    {
-        if(!m_LocalBitmap.isHave(i))
-        {
-            //检测获取
-
-        }
-    }
-    return true;
-}

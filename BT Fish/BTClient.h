@@ -3,8 +3,10 @@
 /************************************************************************/
 /* 说明：封装BTClien对象                                                */
 /* 作者：鱼儿															*/
-/* 联系：littlefish@qq.com												*/
+/* 联系：littlefishcool@qq.com											*/
 /************************************************************************/
+
+//BTClient 协议的交互
 
 //tip:这个工具抛弃种子，这样就可以任意设置配置,目前只支持同时只能从一个peer下载
 
@@ -120,13 +122,6 @@ private:
 
 	void CloseFile();
 
-    bool isDownComplete();
-
-    //获取需要下载的Piece的数据
-    bool GetWantDownPiece(uint_32& index,uint_32& begin,uint_32& len);
-
-    //检测是否存在
-
 private:
 	bool		            m_isConnect;
 	IConnect*	            m_pConnect;
@@ -142,8 +137,6 @@ private:
 	ChokeStatus	            m_PeerChokeStatus;
 	uint_64		            m_FileSize;
     uint_32                 m_PieceCount;
-    RequestDataBlockArray   m_RequestDataBlockArrayIng;         //请求中
-    RequestDataBlockArray   m_RequestDataBlockArrayed;          //已经下载，但还没有组成一个完成的Piece
 
 private:
 	CFile		m_File;

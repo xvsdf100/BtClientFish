@@ -194,14 +194,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BTBitmap.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DownDataManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -233,14 +225,6 @@
 			</File>
 			<File
 				RelativePath=".\BT FishDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\BTBitmap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DownDataManager.h"
 				>
 			</File>
 			<File
@@ -332,10 +316,30 @@
 			<Filter
 				Name="Bitmap"
 				>
+				<File
+					RelativePath=".\BTBitmap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BTBitmap.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="DownDataManager"
 				>
+				<File
+					RelativePath=".\BTDataManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="BTStruct"
+				>
+				<File
+					RelativePath=".\BTDefine.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
