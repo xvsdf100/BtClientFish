@@ -329,6 +329,10 @@
 				Name="DownDataManager"
 				>
 				<File
+					RelativePath=".\BTDataManager.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\BTDataManager.h"
 					>
 				</File>
@@ -408,6 +412,10 @@
 			<Filter
 				Name="utility"
 				>
+				<File
+					RelativePath=".\Utility.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\Utility.h"
 					>
