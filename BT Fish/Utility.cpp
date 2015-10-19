@@ -1,0 +1,52 @@
+#include "Utility.h"
+
+bool IsContainRange( const DataRange& range,const DataRangeList& rangeList )
+{
+    bool IsContain = false;
+    DataRangeList::const_iterator it;
+    for(it = rangeList.begin(); it != rangeList.end(); it++)
+    {
+        if(range.pos >= it->pos && range.len <= it->len)
+        {
+            IsContain = true;
+            break;
+        }
+    }
+
+    return IsContain;
+}
+
+bool RemoveDataRange( const DataRange& range,DataRangeList& rangeList )
+{
+    rangeList::iterator it;
+    for(it = rangeList.begin(); it != rangeList.end(); it++)
+    {
+        
+    }
+}
+
+bool GetInterSectionRange( const DataRange& range1,const DataRange& range2,DataRange& intersecRange )
+{
+    uint_64 PosEnd1 = range1.pos + range1.len;
+    uint_64 PosEnd2 = range2.pos + range2.len;
+    if(range1.pos < range2.pos)
+    {
+        if(PosEnd1 > range2.pos)
+        {
+            intersecRange.pos = range2.pos ;
+            intersecRange.len = (range1.len - (range2.pos - range1.pos)) >= range2.len ? range2.len : range1.len;
+            return true;
+        }
+    }
+    else
+    {
+        // >=
+        if(range1.pos > PosEnd2)
+        {
+            intersecRange.pos = range1.pos;
+            intersecRange.len = PosEnd1 > PosEnd2;
+        }
+    }
+
+    return false;
+}
