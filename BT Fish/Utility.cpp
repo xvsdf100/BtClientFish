@@ -18,11 +18,13 @@ bool IsContainRange( const DataRange& range,const DataRangeList& rangeList )
 
 bool RemoveDataRange( const DataRange& range,DataRangeList& rangeList )
 {
-    rangeList::iterator it;
+    DataRangeList::iterator it;
     for(it = rangeList.begin(); it != rangeList.end(); it++)
     {
         
     }
+
+	return true;
 }
 
 bool GetInterSectionRange( const DataRange& range1,const DataRange& range2,DataRange& intersecRange )

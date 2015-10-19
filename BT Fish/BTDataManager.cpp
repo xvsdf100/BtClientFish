@@ -14,9 +14,11 @@ CBTDataManager::~CBTDataManager()
 bool CBTDataManager::IsContainRange( const DataRange& range )
 {
     //检测是否在存在WantDownList里面
-    if(IsContainRange(range,m_WantDownRangeList))   return true;
+    //if(IsContainRange(range,m_WantDownRangeList))   return true;
 
-    if(IsContainRange(range,m_DownedRangeList))     return true;
+    //if(IsContainRange(range,m_DownedRangeList))     return true;
+
+	return true;
 }
 
 

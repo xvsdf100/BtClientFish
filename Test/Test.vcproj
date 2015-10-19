@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Users\fish\Documents\Visual Studio 2008\Projects\BT Fish\BT Fish&quot;"
+				AdditionalIncludeDirectories="&quot;..\BT Fish\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
