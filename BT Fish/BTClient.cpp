@@ -279,7 +279,8 @@ int CBTClientNet::HandlePiece(uint_32 len)
 	if(m_Protocal.DecodePiecePacket(&m_ReadBuffer,dataLen,index,begin,DataArray))
 	{
 		//现在按循序请求
-		WriteDataFile(0,DataArray.size(),(const byte*)&(*DataArray.begin()));
+		//WriteDataFile(0,DataArray.size(),(const byte*)&(*DataArray.begin()));
+		//添加数据
 		return 1;
 	}
 	return -1;

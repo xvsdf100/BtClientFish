@@ -16,6 +16,9 @@ public:
 
     bool AddDownedDataRange(const DataRange& range);
 
+	//是否是完整
+	bool isComplete();
+
 private:
 	CBTBitmap	    m_LocalBitmap;
     DataRangeList   m_WantDownRangeList;
