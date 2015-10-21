@@ -4,7 +4,7 @@
 #include "StringUtility.h"
 #include "Utility.h"
 
-CBTClientNet::CBTClientNet(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize):m_Protocal(InfoHash,pieceCount,1024*16)
+CBTClientChannel::CBTClientChannel(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize):m_Protocal(InfoHash,pieceCount,1024*16)
 ,m_FileSize(fileSize)
 {
 	m_isConnect = false;
@@ -22,12 +22,12 @@ CBTClientNet::CBTClientNet(NetType type,const std::string& InfoHash,const int_32
 	InitDownFile();
 }
 
-CBTClientNet::~CBTClientNet()
+CBTClientChannel::~CBTClientChannel()
 {
 	
 }
 
-bool CBTClientNet::ConnectTo(std::string ip,int port)
+bool CBTClientChannel::ConnectTo(std::string ip,int port)
 {
 	bool bVal = m_pConnect->Connect(ip,port);
 	if(bVal)
@@ -43,50 +43,50 @@ bool CBTClientNet::ConnectTo(std::string ip,int port)
 	return bVal;
 }
 
-void CBTClientNet::SendHandle()
+void CBTClientChannel::SendHandle()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeHandle(Buffer);
     Write(&Buffer);
 }
 
-void CBTClientNet::SendBitFiled()
+void CBTClientChannel::SendBitFiled()
 {
 
 }
 
-void CBTClientNet::SendRequest()
+void CBTClientChannel::SendRequest()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeRequest(0,Buffer);
 	Write(&Buffer);
 }
 
-void CBTClientNet::SendInteresed()
+void CBTClientChannel::SendInteresed()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeInterested(true,Buffer);
 	Write(&Buffer);
 }
 
-void CBTClientNet::SendNoInteresed()
+void CBTClientChannel::SendNoInteresed()
 {
 	CommBuffer Buffer;
 	m_Protocal.MakeInterested(false,Buffer);
 	Write(&Buffer);
 }
 
-void CBTClientNet::SendChoke()
+void CBTClientChannel::SendChoke()
 {
 
 }
 
-void CBTClientNet::SendUnChoke()
+void CBTClientChannel::SendUnChoke()
 {
 
 }
 
-void CBTClientNet::Run()
+void CBTClientChannel::Run()
 {
 	while (true)
 	{
@@ -136,7 +136,7 @@ void CBTClientNet::Run()
 	}
 }
 
-void CBTClientNet::ProcessPacket()
+void CBTClientChannel::ProcessPacket()
 {
 
     while (m_ReadBuffer.GetDataSize())
@@ -159,7 +159,7 @@ void CBTClientNet::ProcessPacket()
     }
 }
 
-int CBTClientNet::HandleHandMsg()
+int CBTClientChannel::HandleHandMsg()
 {
 	if(m_ReadBuffer.GetDataSize() >= 68)
 	{
@@ -182,7 +182,7 @@ int CBTClientNet::HandleHandMsg()
 	return 1;
 }
 
-int CBTClientNet::HandleCmdMsg()
+int CBTClientChannel::HandleCmdMsg()
 {
 	int ret = 0;
 	uint_8 MinCmdSize = 4 + 1; //最小命令的长度 len + id
@@ -220,7 +220,7 @@ int CBTClientNet::HandleCmdMsg()
 	return ret;
 }
 
-int CBTClientNet::HandleBitfit(uint_32 len)
+int CBTClientChannel::HandleBitfit(uint_32 len)
 {
 	if(m_ReadBuffer.GetDataSize() >= len)
 	{
@@ -252,7 +252,7 @@ int CBTClientNet::HandleBitfit(uint_32 len)
 }
 
 
-int CBTClientNet::HandleUnchoke(uint_32 len)
+int CBTClientChannel::HandleUnchoke(uint_32 len)
 {
 	if(len == 1)
 	{
@@ -269,7 +269,7 @@ int CBTClientNet::HandleUnchoke(uint_32 len)
 }
 
 
-int CBTClientNet::HandlePiece(uint_32 len)
+int CBTClientChannel::HandlePiece(uint_32 len)
 {
 	uint_32		dataLen = 0;
 	uint_32		index	= 0;
@@ -286,13 +286,13 @@ int CBTClientNet::HandlePiece(uint_32 len)
 	return -1;
 }
 
-uint_32 CBTClientNet::Write( BaseBuffer* buffer )
+uint_32 CBTClientChannel::Write( BaseBuffer* buffer )
 {
     assert(NULL != buffer);
     return m_WriteBuffer.Write((byte*)buffer->GetData(),buffer->GetDataSize(),buffer->GetDataSize());
 }
 
-bool CBTClientNet::ReadPacket()
+bool CBTClientChannel::ReadPacket()
 {
     const uint_32 bufLen = 1024*8;
     byte buf[bufLen];
@@ -323,7 +323,7 @@ bool CBTClientNet::ReadPacket()
     return true;
 }
 
-bool CBTClientNet::WritePacket()
+bool CBTClientChannel::WritePacket()
 {
     if(m_WriteBuffer.GetDataSize() > 0&& m_isConnect)
     {
@@ -349,19 +349,19 @@ bool CBTClientNet::WritePacket()
     return true;
 }
 
-void CBTClientNet::Close()
+void CBTClientChannel::Close()
 {
     m_pConnect->Close();
     SAFEDEL(m_pConnect);
     m_isConnect = false;
 }
 
-void CBTClientNet::InitLocalBitmap()
+void CBTClientChannel::InitLocalBitmap()
 {
 	
 }
 
-bool CBTClientNet::InitDownFile()
+bool CBTClientChannel::InitDownFile()
 {
     CFileException e;
     if(!m_File.Open(_T("D:\\testMyPiece.txt"),CFile::modeCreate | CFile::modeWrite,&e))
@@ -372,7 +372,7 @@ bool CBTClientNet::InitDownFile()
 	return true;
 }
 
-bool CBTClientNet::WriteDataFile(int_64 pos,int_32 len,const byte* data)
+bool CBTClientChannel::WriteDataFile(int_64 pos,int_32 len,const byte* data)
 {
 	ASSERT(m_File.m_hFile != INVALID_HANDLE_VALUE);
 	ASSERT(pos < m_FileSize);
@@ -390,12 +390,12 @@ bool CBTClientNet::WriteDataFile(int_64 pos,int_32 len,const byte* data)
 	return false;
 }
 
-bool CBTClientNet::WriteInitData()
+bool CBTClientChannel::WriteInitData()
 {
 	return true;
 }
 
-void CBTClientNet::CloseFile()
+void CBTClientChannel::CloseFile()
 {
 	m_File.Close();
 }

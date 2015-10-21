@@ -17,7 +17,7 @@
 #include "BTProtocal.h"
 #include "BTBitmap.h"
 
-class CBTClientNet:public BaseThread
+class CBTClientChannel:public BaseThread
 {
 public:
 	enum NetType
@@ -50,8 +50,8 @@ public:
     typedef std::vector<RequestDataBlock>    RequestDataBlockArray;
 
 public:
-	CBTClientNet(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
-	~CBTClientNet();
+	CBTClientChannel(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
+	~CBTClientChannel();
 
 	bool ConnectTo(std::string ip,int port);
 
@@ -142,7 +142,7 @@ private:
 	CFile		m_File;
 
 private:
-	CBTClientNet(CBTClientNet&);
+	CBTClientChannel(CBTClientChannel&);
 
 };
 #endif

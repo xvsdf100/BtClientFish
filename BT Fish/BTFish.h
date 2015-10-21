@@ -1,5 +1,5 @@
 
-// BT Fish.h : PROJECT_NAME 应用程序的主头文件
+// BTFish.h : PROJECT_NAME 应用程序的主头文件
 //
 
 #pragma once

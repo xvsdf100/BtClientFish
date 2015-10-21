@@ -70,7 +70,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\BT Fish.ico"
+IDR_MAINFRAME           ICON                    "res\\BTFish.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -134,9 +134,9 @@ BEGIN
             VALUE "CompanyName", "TODO: <公司名>"
             VALUE "FileDescription", "TODO: <文件说明>"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "BT Fish.exe"
+            VALUE "InternalName", "BTFish.exe"
             VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
-            VALUE "OriginalFilename", "BT Fish.exe"
+            VALUE "OriginalFilename", "BTFish.exe"
             VALUE "ProductName", "TODO: <产品名>"
             VALUE "ProductVersion", "1.0.0.1"
         END

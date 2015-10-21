@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="BT Fish"
+	Name="BT"
 	ProjectGUID="{AC63F9DB-6DF3-4E33-829C-0FC296F0809D}"
 	RootNamespace="BTFish"
 	Keyword="MFCProj"
@@ -186,11 +186,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\BT Fish.cpp"
+				RelativePath=".\BTFish.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\BT FishDlg.cpp"
+				RelativePath=".\BTFishDlg.cpp"
 				>
 			</File>
 			<File
@@ -220,11 +220,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\BT Fish.h"
+				RelativePath=".\BTFish.h"
 				>
 			</File>
 			<File
-				RelativePath=".\BT FishDlg.h"
+				RelativePath=".\BTFishDlg.h"
 				>
 			</File>
 			<File
@@ -246,11 +246,11 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\BT Fish.ico"
+				RelativePath=".\res\BTFish.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\BT Fish.rc"
+				RelativePath=".\BTFish.rc"
 				>
 			</File>
 			<File
@@ -342,6 +342,18 @@
 				>
 				<File
 					RelativePath=".\BTDefine.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="BTTask"
+				>
+				<File
+					RelativePath=".\BTTask.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BTTask.h"
 					>
 				</File>
 			</Filter>

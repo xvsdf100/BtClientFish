@@ -3,9 +3,10 @@
 //
 
 #include "stdafx.h"
-#include "BT Fish.h"
-#include "BT FishDlg.h"
+#include "BTFish.h"
+#include "BTFishDlg.h"
 #include "CommBuffer.h"
+#include "BTTask.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -171,10 +172,10 @@ void CBTFishDlg::OnBnClickedOk()
 	GetPeerInfoFormUI();
 	std::string ip = CW2A(m_PeerIP);
 	std::string InfoHash = CW2A(m_InfoHash);
-	if(NULL == m_pClient)
+	/*if(NULL == m_pClient)
 	{
 		//test
-		m_pClient = new CBTClientNet(CBTClientNet::TCP,InfoHash,1,290);
+		m_pClient = new CBTClientChannel(CBTClientChannel::TCP,InfoHash,1,290);
 		if(!m_pClient->ConnectTo(ip,m_Port))
 		{
 			AfxMessageBox(_T("Á¬½ÓÊ§°Ü"));
@@ -183,9 +184,11 @@ void CBTFishDlg::OnBnClickedOk()
 		{
 			m_pClient->CreateThread();
 		}
-	}
+	}*/
 
-
+	//ÏÈ²âÊÔ×èÈû
+	CBTTask* pTask = new CBTTask();
+	pTask->Start();
 }
 
 void CBTFishDlg::GetPeerInfoFormUI()

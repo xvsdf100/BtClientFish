@@ -1,5 +1,5 @@
 
-// BT FishDlg.h : 头文件
+// BTFishDlg.h : 头文件
 //
 
 #pragma once
@@ -30,7 +30,7 @@ private:
 
 
 private:
-	CBTClientNet* m_pClient;
+	CBTClientChannel* m_pClient;
 // 实现
 protected:
 	HICON m_hIcon;

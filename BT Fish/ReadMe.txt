@@ -10,7 +10,7 @@ BT Fish.vcproj
     这是使用应用程序向导生成的 VC++ 项目的主项目文件。
     它包含有关生成文件的 Visual C++ 版本的信息，以及有关使用应用程序向导选择的平台、配置和项目功能的信息。
 
-BT Fish.h
+BTFish.h
     这是应用程序的主要头文件。它包括其他项目特定的头文件(包括 Resource.h)，并声明 CBTFishApp 应用程序类。
 
 BT Fish.cpp
@@ -30,7 +30,7 @@ res\BTFish.rc2
 
 应用程序向导创建一个对话框类:
 
-BT FishDlg.h，BT FishDlg.cpp - 对话框
+BTFishDlg.h，BT FishDlg.cpp - 对话框
     这些文件包含 CBTFishDlg 类。该类定义应用程序主对话框的行为。该对话框的模板位于 BT Fish.rc 中，该文件可以在 Microsoft Visual C++ 中进行编辑。
 
 

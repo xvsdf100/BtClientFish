@@ -3,8 +3,8 @@
 //
 
 #include "stdafx.h"
-#include "BT Fish.h"
-#include "BT FishDlg.h"
+#include "BTFish.h"
+#include "BTFishDlg.h"
 #include <WinSock2.h>
 
 #pragma comment(lib,"ws2_32")
