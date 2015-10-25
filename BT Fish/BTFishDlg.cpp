@@ -172,22 +172,13 @@ void CBTFishDlg::OnBnClickedOk()
 	GetPeerInfoFormUI();
 	std::string ip = CW2A(m_PeerIP);
 	std::string InfoHash = CW2A(m_InfoHash);
-	/*if(NULL == m_pClient)
-	{
-		//test
-		m_pClient = new CBTClientChannel(CBTClientChannel::TCP,InfoHash,1,290);
-		if(!m_pClient->ConnectTo(ip,m_Port))
-		{
-			AfxMessageBox(_T("Á¬½ÓÊ§°Ü"));
-		}
-		else
-		{
-			m_pClient->CreateThread();
-		}
-	}*/
 
 	//ÏÈ²âÊÔ×èÈû
-	CBTTask* pTask = new CBTTask();
+	CBTTask::BTInfo info;
+	info.FileSize = 290;
+	info.InfoHash = InfoHash;
+	info.PieceSize = 16384;
+	CBTTask* pTask = new CBTTask(info);
 	pTask->Start();
 }
 

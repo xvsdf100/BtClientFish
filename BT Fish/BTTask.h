@@ -8,17 +8,22 @@
 
 class CBTTask
 {
+
+private:
+	friend class CBTClientChannel;
+public:
 	typedef std::vector<CBTClientChannel> BTClientChannelArray;
 
 	typedef struct tagBTInfo
 	{
-		string	TorrentPath;
-		string	InfoHash;
+		std::string	TorrentPath;
+		std::string	InfoHash;
 		int_64	FileSize;
 		int		PieceSize;
 	}BTInfo;
 
 public:
+	CBTTask();
 	CBTTask(const BTInfo& Info);
 	~CBTTask();
 
@@ -33,5 +38,6 @@ private:
 	int						m_Status;		//ÁÙÊ±±£´æ×´Ì¬
 	BTClientChannelArray	m_ChannelArray;	
 	CBTDataManager*			m_DataManager;
+
 };
 #endif

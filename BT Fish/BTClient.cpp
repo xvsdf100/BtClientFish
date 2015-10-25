@@ -3,8 +3,9 @@
 #include "TcpConnetorImp.h"
 #include "StringUtility.h"
 #include "Utility.h"
+#include "BTTask.h"
 
-CBTClientChannel::CBTClientChannel(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize):m_Protocal(InfoHash,pieceCount,1024*16)
+CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize):m_Protocal(InfoHash,pieceCount,1024*16)
 ,m_FileSize(fileSize)
 {
 	m_isConnect = false;
@@ -19,6 +20,8 @@ CBTClientChannel::CBTClientChannel(NetType type,const std::string& InfoHash,cons
 		m_pConnect = new CTcpConnectImp();
 	}
 
+	assert(NULL != task);
+	m_pTask = task;
 	InitDownFile();
 }
 
@@ -58,7 +61,8 @@ void CBTClientChannel::SendBitFiled()
 void CBTClientChannel::SendRequest()
 {
 	CommBuffer Buffer;
-	m_Protocal.MakeRequest(0,Buffer);
+	//暂时这样赋值,给最指定的值
+	m_Protocal.MakeRequest(m_NeedRange.index,m_NeedRange.len,Buffer);
 	Write(&Buffer);
 }
 
@@ -240,6 +244,12 @@ int CBTClientChannel::HandleBitfit(uint_32 len)
 
 		//更新对方位图
 
+		//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
+		DataRange range;
+		//这里暂时认为对方都有，遍历自己没有就可以下载。
+		assert(m_pTask->m_DataManager->GetNoneDownDataRange(range));
+		m_NeedRange = range;
+
 		//默认值，测试使用
 		if(m_SelfChokeStatus == CHoked)
 		{
@@ -281,7 +291,28 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 		//现在按循序请求
 		//WriteDataFile(0,DataArray.size(),(const byte*)&(*DataArray.begin()));
 		//添加数据
-		return 1;
+		if(m_pTask->m_DataManager->AddDownedDataRange(m_NeedRange,(uint_8*)&DataArray.at(0)))
+		{
+			OutputDebugString(L"On Piece Ok");
+
+			//先检测是否下载完成
+			if(m_pTask->m_DataManager->isComplete())
+			{
+				//触发关闭任务
+				return 1;
+			}
+			//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
+			DataRange range;
+			//这里暂时认为对方都有，遍历自己没有就可以下载。
+			if(m_pTask->m_DataManager->GetNoneDownDataRange(range))
+			{
+				m_NeedRange = range;
+				SendInteresed();
+			}
+
+			//更新数据
+			return 1;
+		}
 	}
 	return -1;
 }
@@ -363,31 +394,14 @@ void CBTClientChannel::InitLocalBitmap()
 
 bool CBTClientChannel::InitDownFile()
 {
-    CFileException e;
-    if(!m_File.Open(_T("D:\\testMyPiece.txt"),CFile::modeCreate | CFile::modeWrite,&e))
-    {
-        return false;
-    }
-
 	return true;
 }
 
 bool CBTClientChannel::WriteDataFile(int_64 pos,int_32 len,const byte* data)
 {
-	ASSERT(m_File.m_hFile != INVALID_HANDLE_VALUE);
-	ASSERT(pos < m_FileSize);
-	
-	//占时不填充
-	//ULONGLONG pos = m_File.Seek(pos,CFile::begin);
 
-	//if(pos > 0 )
-	{
-		m_File.Write(data,len);
 
-		return true;
-	}
-
-	return false;
+	return true;
 }
 
 bool CBTClientChannel::WriteInitData()
@@ -397,6 +411,6 @@ bool CBTClientChannel::WriteInitData()
 
 void CBTClientChannel::CloseFile()
 {
-	m_File.Close();
+
 }
 

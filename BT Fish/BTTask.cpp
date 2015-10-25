@@ -1,5 +1,9 @@
 #include "BTTask.h"
 
+CBTTask::CBTTask()
+{
+	//test
+}
 
 CBTTask::CBTTask(const BTInfo& Info)
 {
@@ -8,6 +12,7 @@ CBTTask::CBTTask(const BTInfo& Info)
 	m_DataManager = NULL;
 }
 
+
 CBTTask::~CBTTask()
 {
 
@@ -15,15 +20,16 @@ CBTTask::~CBTTask()
 
 bool CBTTask::Start()
 {
-	CBTClientChannel* Channel = new CBTClientChannel(CBTClientChannel::TCP,m_BTInfo.InfoHash,1,290);
-	if(Channel->ConnectTo("127.0.0.1",6666))
+
+	Init();		//如果初始化失败,这个BT任务就创建失败
+	CBTClientChannel* Channel = new CBTClientChannel(this,CBTClientChannel::TCP,m_BTInfo.InfoHash,1,290);
+	if(Channel->ConnectTo("127.0.0.1",7471))
 	{
-		TRACE0(L"连接成功,开始运行run");
 		Channel->Run();
 	}
 	else
 	{
-		AfxMessageBox(L"连接错误");
+		::MessageBox(0,L"连接错误",0,0);
 	}
 
 	return true;
@@ -38,6 +44,6 @@ void CBTTask::Init()
 {
 	//创建一个必要对象
 	m_DataManager = new CBTDataManager();
-	
+	m_DataManager->Init();
 
 }

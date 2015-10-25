@@ -48,12 +48,12 @@ bool BTProtocal::MakeInterested(bool bInterested,CommBuffer& Buffer)
 	return true;
 }
 
-bool BTProtocal::MakeRequest(uint_32 pieceIndex,CommBuffer& Buffer)
+bool BTProtocal::MakeRequest(uint_32 pieceIndex,uint_32 sliceLen,CommBuffer& Buffer)
 {
 	int_32 len = 13;
 	int_8 id = 6;
 	int_32 begin = 0;
-	int_32 piecelen = htonl(100);
+	int_32 piecelen = htonl(sliceLen);
 	pieceIndex = htonl(pieceIndex);
 	len = htonl(len);
 	Buffer.WriteInt32(len);

@@ -11,12 +11,15 @@
 //tip:这个工具抛弃种子，这样就可以任意设置配置,目前只支持同时只能从一个peer下载
 
 #include "IConnection.h"
+#include <WinSock2.h>
 #include <string>
 #include "BaseThread.h"
 #include "LockBuffer.h"
 #include "BTProtocal.h"
 #include "BTBitmap.h"
 
+
+class CBTTask;
 class CBTClientChannel:public BaseThread
 {
 public:
@@ -50,7 +53,7 @@ public:
     typedef std::vector<RequestDataBlock>    RequestDataBlockArray;
 
 public:
-	CBTClientChannel(NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
+	CBTClientChannel(CBTTask* task, NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize);
 	~CBTClientChannel();
 
 	bool ConnectTo(std::string ip,int port);
@@ -123,6 +126,7 @@ private:
 	void CloseFile();
 
 private:
+	CBTTask*				m_pTask;
 	bool		            m_isConnect;
 	IConnect*	            m_pConnect;
 	NetType		            m_Type;
@@ -137,9 +141,8 @@ private:
 	ChokeStatus	            m_PeerChokeStatus;
 	uint_64		            m_FileSize;
     uint_32                 m_PieceCount;
+	DataRange				m_NeedRange;
 
-private:
-	CFile		m_File;
 
 private:
 	CBTClientChannel(CBTClientChannel&);

@@ -6,7 +6,8 @@
 #include <iostream>
 using namespace std;
 
-int _tmain(int argc, _TCHAR* argv[])
+
+void TestBuffer()
 {
 	CommBuffer buffer;
 	buffer.WriteInt8(1);
@@ -39,6 +40,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	buffer.WriteInt32(4);
 	buffer.ReadInt32(i3,false);
 	buffer.ReadInt32(i3,false);
+}
+
+void TestVector()
+{
+	std::vector<int> array;
+	array.resize(1);
+	array[0] = 23;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	TestVector();
 	getchar();
 	return 0;
 }

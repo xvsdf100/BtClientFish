@@ -26,6 +26,9 @@
 
 #include <afxdisp.h>        // MFC 自动化类
 
+#include "Utility.h"
+#include "StringUtility.h"
+
 
 
 #ifndef _AFX_NO_OLE_SUPPORT

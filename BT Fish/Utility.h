@@ -8,7 +8,8 @@
 typedef	struct tagDataRange
 {
 	int_64	pos;
-	int_32	len;
+	uint_32	len;
+	uint_32 index;
 }DataRange;
 
 typedef std::vector<DataRange>  DataRangeList;

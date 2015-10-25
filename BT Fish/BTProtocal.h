@@ -25,7 +25,7 @@ public:
 	bool MakeHandle(CommBuffer& Buffer);
 	bool MakeBitfit();
 	bool MakeInterested(bool bInterested,CommBuffer& Buffer);
-	bool MakeRequest(uint_32 pieceIndex,CommBuffer& Buffer);
+	bool MakeRequest(uint_32 pieceIndex,uint_32 sliceLen,CommBuffer& Buffer);
 
 	//解析数据包
 	bool DecodePiecePacket(CommBuffer* pBuffer,uint_32& dataLength,uint_32& index,uint_32& begin,ByteArray& block);
