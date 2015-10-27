@@ -69,7 +69,7 @@ private:
 	void SendBitFiled();
 
 	//发送Request
-	void SendRequest();
+	void SendRequest(uint_32 index,uint_32 begin,uint_32 len);
 
 	//发送感兴趣
 	void SendInteresed();
@@ -142,6 +142,7 @@ private:
 	uint_64		            m_FileSize;
     uint_32                 m_PieceCount;
 	DataRange				m_NeedRange;
+	uint_32					m_DownLoadByte;
 
 
 private:

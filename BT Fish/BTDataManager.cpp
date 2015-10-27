@@ -60,17 +60,17 @@ bool CBTDataManager::isComplete()
 		}
 	}
 
-	return true;
+	return isOk;
 }
 
 //初始化
 void CBTDataManager::Init()
 {
 	//初始化，硬编码
-	m_TorrentInfo.FileSize = 290;
+	m_TorrentInfo.FileSize = 48201;
 	m_TorrentInfo.InfoHash = "";
-	m_TorrentInfo.PieceCount = 1;
-	m_TorrentInfo.PieceSize = 16384;
+	m_TorrentInfo.PieceCount = 2;
+	m_TorrentInfo.PieceSize = 16384*2;
 
 	m_DownloadStatusArray.resize(m_TorrentInfo.PieceCount);
 	for(uint_32 i = 0; i < m_TorrentInfo.PieceCount; i++)

@@ -175,9 +175,9 @@ void CBTFishDlg::OnBnClickedOk()
 
 	//ÏÈ²âÊÔ×èÈû
 	CBTTask::BTInfo info;
-	info.FileSize = 290;
+	info.FileSize = 48201;
 	info.InfoHash = InfoHash;
-	info.PieceSize = 16384;
+	info.PieceSize = 16384*2;
 	CBTTask* pTask = new CBTTask(info);
 	pTask->Start();
 }
@@ -195,7 +195,7 @@ void CBTFishDlg::InitUI()
 {
 	m_IPCCtrl.SetWindowText(_T("127.0.0.1"));
 	m_Port = 11038;
-	m_InfoHash = _T("3ed97dd258f44434ad78dc422606887c90020046");
+	m_InfoHash = _T("b628a353e19abfd3e7671140bdb9dd06ff987f12");
 	UpdateData(FALSE);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
 }

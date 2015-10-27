@@ -22,6 +22,7 @@ CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string
 
 	assert(NULL != task);
 	m_pTask = task;
+	m_DownLoadByte = 0;
 	InitDownFile();
 }
 
@@ -58,11 +59,11 @@ void CBTClientChannel::SendBitFiled()
 
 }
 
-void CBTClientChannel::SendRequest()
+void CBTClientChannel::SendRequest(uint_32 index,uint_32 begin,uint_32 len)
 {
 	CommBuffer Buffer;
 	//暂时这样赋值,给最指定的值
-	m_Protocal.MakeRequest(m_NeedRange.index,m_NeedRange.len,Buffer);
+	m_Protocal.MakeRequest(index,begin,len,Buffer);
 	Write(&Buffer);
 }
 
@@ -268,10 +269,8 @@ int CBTClientChannel::HandleUnchoke(uint_32 len)
 	{
 		m_ReadBuffer.Remove(0,5);
 		m_SelfChokeStatus = UnChoke;
-
-		//开始计算发送需要的
-		//test
-		SendRequest();
+		uint_32 ulen = m_NeedRange.len <= 16*1024 ? m_NeedRange.len : 16*1024;
+		SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
 		return 1;
 	}
 
@@ -288,31 +287,42 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 
 	if(m_Protocal.DecodePiecePacket(&m_ReadBuffer,dataLen,index,begin,DataArray))
 	{
-		//现在按循序请求
-		//WriteDataFile(0,DataArray.size(),(const byte*)&(*DataArray.begin()));
-		//添加数据
-		if(m_pTask->m_DataManager->AddDownedDataRange(m_NeedRange,(uint_8*)&DataArray.at(0)))
-		{
-			OutputDebugString(L"On Piece Ok");
-
-			//先检测是否下载完成
-			if(m_pTask->m_DataManager->isComplete())
+		m_DownLoadByte += dataLen;
+		m_NeedRange.len -= dataLen;
+		if(0 == m_NeedRange.len)
+		{	
+			m_NeedRange.len = m_DownLoadByte;
+			if(m_pTask->m_DataManager->AddDownedDataRange(m_NeedRange,(uint_8*)&DataArray.at(0)))
 			{
-				//触发关闭任务
+				OutputDebugString(L"On Piece Ok");
+
+				//先检测是否下载完成
+				if(m_pTask->m_DataManager->isComplete())
+				{
+					//触发关闭任务
+					return 1;
+				}
+				//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
+				DataRange range;
+				//这里暂时认为对方都有，遍历自己没有就可以下载。
+				if(m_pTask->m_DataManager->GetNoneDownDataRange(range))
+				{
+					m_NeedRange = range;
+					uint_32 ulen = m_NeedRange.len <= 16*1024 ? m_NeedRange.len : 16*1024;
+					m_DownLoadByte = 0;
+					SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
+				}
+
+				//更新数据
 				return 1;
 			}
-			//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
-			DataRange range;
-			//这里暂时认为对方都有，遍历自己没有就可以下载。
-			if(m_pTask->m_DataManager->GetNoneDownDataRange(range))
-			{
-				m_NeedRange = range;
-				SendInteresed();
-			}
-
-			//更新数据
-			return 1;
 		}
+		else
+		{
+			uint_32 ulen = m_NeedRange.len <= 16*1024 ? m_NeedRange.len : 16*1024;
+			SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
+		}
+
 	}
 	return -1;
 }
