@@ -143,6 +143,7 @@ private:
     uint_32                 m_PieceCount;
 	DataRange				m_NeedRange;
 	uint_32					m_DownLoadByte;
+	CommBuffer				m_PieceBuffer;
 
 
 private:

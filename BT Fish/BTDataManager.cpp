@@ -4,7 +4,7 @@
 
 CBTDataManager::CBTDataManager()
 {
-
+	m_hFile = INVALID_HANDLE_VALUE;
 }
 
 CBTDataManager::~CBTDataManager()
@@ -78,6 +78,11 @@ void CBTDataManager::Init()
 		m_DownloadStatusArray[i] = NONE;
 	}
 
+	HANDLE hFile = CreateFile(L"testBittorrent.txt",GENERIC_WRITE,NULL,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	if(INVALID_HANDLE_VALUE != hFile)	
+	{
+		m_hFile = hFile;
+	}
 
 }
 
@@ -109,6 +114,17 @@ int CBTDataManager::AddDownedDataRange( const DataRange& range,uint_8* buffer )
 	int_32 index = GetIndexFromRange(range);
 	if(-1 == index)	return 1;	//数据异常
 
+	if(INVALID_HANDLE_VALUE == m_hFile)
+	{
+		return 2;
+	}
+
+	DWORD dwWrite;
+	if(!WriteFile(m_hFile,buffer,range.len,&dwWrite,NULL))
+	{
+		return 3;
+	}
+	
 	//检验数据正确的性
 	m_DownloadStatusArray[index] = DOWNED;
 	

@@ -3,6 +3,7 @@
 #include "Utility.h"
 #include "BTDefine.h"
 #include "BTBitmap.h"
+#include <Windows.h>
 
 class CBTDataManager
 {
@@ -46,6 +47,7 @@ private:
     DataRangeList   m_DownedRangeList;
 	BT::TorrentInfo	m_TorrentInfo;
 	DownloadStatusArray	m_DownloadStatusArray;
+	HANDLE			m_hFile;
 };
 
 
