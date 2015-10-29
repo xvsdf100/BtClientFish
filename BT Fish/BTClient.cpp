@@ -6,7 +6,6 @@
 #include "BTTask.h"
 
 CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string& InfoHash,const int_32& pieceCount,const int_64& fileSize):m_Protocal(InfoHash,pieceCount,1024*16)
-,m_FileSize(fileSize)
 {
 	m_isConnect = false;
 	m_pConnect = NULL;
@@ -14,7 +13,6 @@ CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string
 	m_BtState = WaitHand;
 	m_SelfChokeStatus = CHoked;
 	m_PeerChokeStatus = CHoked;
-    m_PieceCount = pieceCount;
 	if(m_Type == TCP)
 	{
 		m_pConnect = new CTcpConnectImp();
@@ -289,10 +287,11 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 	{
 		m_DownLoadByte += dataLen;
 		m_NeedRange.len -= dataLen;
+        m_PieceBuffer.Write(&DataArray[0],DataArray.size(),DataArray.size());
 		if(0 == m_NeedRange.len)
 		{	
 			m_NeedRange.len = m_DownLoadByte;
-			if(m_pTask->m_DataManager->AddDownedDataRange(m_NeedRange,(uint_8*)&DataArray.at(0)))
+			if(!m_pTask->m_DataManager->AddDownedDataRange(m_NeedRange,(uint_8*)m_PieceBuffer.GetData()))
 			{
 				OutputDebugString(L"On Piece Ok");
 
@@ -313,15 +312,17 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 					SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
 				}
 
-				//更新数据
-				return 1;
 			}
+            m_PieceBuffer.Clear();
+            return 1;
 		}
 		else
 		{
 			uint_32 ulen = m_NeedRange.len <= 16*1024 ? m_NeedRange.len : 16*1024;
 			SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
 		}
+
+        
 
 	}
 	return -1;

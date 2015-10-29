@@ -20,13 +20,6 @@ public:
 	CBTDataManager();
 	~CBTDataManager();
 
-    bool IsContainRange(const DataRange& range);
-
-    //添加DataRange，根据配置进行校验
-    bool AddWantDownDataRange(const DataRange& range);
-
-    bool AddDownedDataRange(const DataRange& range);
-
 	//是否是完整
 	bool isComplete();
 

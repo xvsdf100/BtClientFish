@@ -136,11 +136,8 @@ private:
 	BTNetState	            m_BtState;
 	WSAEVENT	            m_NetEvent;
 	CBTBitmap	            m_RemoteBitmap;
-	CBTBitmap	            m_LocalBitmap;
 	ChokeStatus	            m_SelfChokeStatus;
 	ChokeStatus	            m_PeerChokeStatus;
-	uint_64		            m_FileSize;
-    uint_32                 m_PieceCount;
 	DataRange				m_NeedRange;
 	uint_32					m_DownLoadByte;
 	CommBuffer				m_PieceBuffer;

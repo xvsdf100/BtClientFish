@@ -1,5 +1,9 @@
 #ifndef UTILITY_H
 #define UTILITY_H
+#ifdef _MSC_VER
+#include "stdafx.h"
+#endif
+
 #include "DataType.h"
 #include <vector>
 
@@ -22,5 +26,8 @@ bool RemoveDataRange(const DataRange& range,DataRangeList& rangeList);
 
 //获取交集
 bool GetInterSectionRange(const DataRange& range1,const DataRange& range2,DataRange& intersecRange);
+
+#define WM_USER_LOG WM_USER + 5000
+#define LOG_INFO AfxGetMainWnd(X)->PostMessage(WM_USER_LOG,new CString(X));
 
 #endif

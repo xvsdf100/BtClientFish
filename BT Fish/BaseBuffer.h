@@ -24,6 +24,8 @@ public:
 
 	const byte*			GetData()	{return m_Data;}
 
+    void Clear();
+
     
 
 private:

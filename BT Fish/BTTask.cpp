@@ -1,3 +1,4 @@
+#include "Utility.h"
 #include "BTTask.h"
 
 CBTTask::CBTTask()
@@ -15,7 +16,7 @@ CBTTask::CBTTask(const BTInfo& Info)
 
 CBTTask::~CBTTask()
 {
-
+    SAFEDEL(m_DataManager);
 }
 
 bool CBTTask::Start()
@@ -23,7 +24,7 @@ bool CBTTask::Start()
 
 	Init();		//如果初始化失败,这个BT任务就创建失败
 	CBTClientChannel* Channel = new CBTClientChannel(this,CBTClientChannel::TCP,m_BTInfo.InfoHash,1,290);
-	if(Channel->ConnectTo("127.0.0.1",7471))
+	if(Channel->ConnectTo("127.0.0.1",11038))
 	{
 		Channel->Run();
 	}

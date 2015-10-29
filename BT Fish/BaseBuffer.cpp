@@ -121,4 +121,16 @@ uint_32 BaseBuffer::Remove( uint_32 begin,uint_32 size )
     return len;
 }
 
+void BaseBuffer::Clear()
+{
+    if(NULL != m_Data)
+    {
+        free(m_Data);
+        m_Data = NULL;
+    }
+
+    m_Size = 0;
+    m_Pos = 0;
+}
+
 
