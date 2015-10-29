@@ -446,6 +446,26 @@
 				</Filter>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="接口"
+			>
+			<File
+				RelativePath=".\DownloadInterface.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="实现"
+			>
+			<File
+				RelativePath=".\InternalDownloadImp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InternalDownloadImp.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
