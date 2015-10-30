@@ -6,6 +6,7 @@
 
 #include "BTClient.h"
 #include "afxcmn.h"
+#include "DownloadInterface.h"
 
 // CBTFishDlg 对话框
 class CBTFishDlg : public CDialog
@@ -28,6 +29,7 @@ private:
 	//设置UI初始化值
 	void InitUI();
 
+    bool InitDownload();
 
 private:
 	CBTClientChannel* m_pClient;
@@ -51,4 +53,10 @@ private:
 	CIPAddressCtrl m_IPCCtrl;
 	CString	m_PeerIP;
 	UINT m_PieceCount;
+public:
+    UINT m_ulPieceSize;
+    IDownLoad*  m_IDownload;
+    ULONGLONG m_i64FileSize;
+    TASK_HANDLE m_hDownloadTask;
+    CString m_strSavePath;
 };

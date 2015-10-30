@@ -21,7 +21,6 @@ CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string
 	assert(NULL != task);
 	m_pTask = task;
 	m_DownLoadByte = 0;
-	InitDownFile();
 }
 
 CBTClientChannel::~CBTClientChannel()
@@ -39,7 +38,9 @@ bool CBTClientChannel::ConnectTo(std::string ip,int port)
 		if(SOCKET_ERROR == bError)
 		{
 			bError = WSAGetLastError();
-			TRACE("ss");
+            char MsgError[100];
+            sprintf(MsgError,"[CBTClientChannel::ConnectTo] Error:%d\n",bError);
+            TRACE(MsgError);
 		}
 	}
 	return bVal;
@@ -89,54 +90,60 @@ void CBTClientChannel::SendUnChoke()
 
 }
 
-void CBTClientChannel::Run()
+int CBTClientChannel::Run()
 {
-	while (true)
-	{
 
-		WSANETWORKEVENTS pEvents;
-		BOOL bRet = WSAEnumNetworkEvents( (SOCKET)m_pConnect->GetHandle(), m_NetEvent, &pEvents );
-		if(0!=bRet)
-		{
-			BOOL Error = WSAGetLastError();
-			Error;
-		}
+    WSANETWORKEVENTS pEvents;
+    BOOL bRet = WSAEnumNetworkEvents( (SOCKET)m_pConnect->GetHandle(), m_NetEvent, &pEvents );
+    if(0!=bRet)
+    {
+        BOOL Error = WSAGetLastError();
+        char MsgError[100];
+        sprintf(MsgError,"[CBTClientChannel::Run] WSANetworkEvent Error:%d\n",Error);
+        TRACE(MsgError);
+        return 1;
+    }
 
-		if(pEvents.lNetworkEvents & FD_CONNECT)
-		{
-			if ( pEvents.iErrorCode[ FD_CONNECT_BIT ] != 0 )
-			{
-				closesocket((SOCKET)m_pConnect->GetHandle());
-                m_isConnect = false;
-                AfxMessageBox(L"连接断开");
-				break;
-			}
-			else
-			{
-				//连接成功
-                TRACE("[CBTClientNet::Run] 连接成功 发送握手消息\n");
-				m_isConnect = true;
-				SendHandle();
-				continue;
-			}
-		}
+    if(pEvents.lNetworkEvents & FD_CONNECT)
+    {
+        if ( pEvents.iErrorCode[ FD_CONNECT_BIT ] != 0 )
+        {
+            closesocket((SOCKET)m_pConnect->GetHandle());
+            m_isConnect = false;
+            AfxMessageBox(L"连接断开");
+            return 1;
+        }
+        else
+        {
+            //连接成功
+            TRACE("[CBTClientNet::Run] 连接成功 发送握手消息\n");
+            m_isConnect = true;
+            SendHandle();
+        }
+    }
 
-		if(!m_isConnect)	continue;
+    if(!m_isConnect)	
+    {
+        //没有连接
+        return 0;
+    }
 
-        //如果有数据就发送数据
-        if(!WritePacket())   
-		{
-			AfxMessageBox(_T("write client disconnect"));
-			break;
-		}
+    //如果有数据就发送数据
+    if(!WritePacket())   
+    {
+        AfxMessageBox(_T("write client disconnect"));
+        return 1;
+    }
 
-        //如果没有读取到新的数据就不需要读取
-        if(!ReadPacket())
-		{
-			AfxMessageBox(_T("read client disconnect"));
-			break;
-		}
-	}
+    //如果没有读取到新的数据就不需要读取
+    if(!ReadPacket())
+    {
+        AfxMessageBox(_T("read client disconnect"));
+       return 1;
+    }
+
+    return 0;
+
 }
 
 void CBTClientChannel::ProcessPacket()

@@ -15,6 +15,7 @@ namespace BT
 	struct TorrentInfo
 	{
 		std::string InfoHash;
+        std::string TorrentPath;
 		uint_64		FileSize;
 		uint_32		PieceCount;
 		uint_32		PieceSize;

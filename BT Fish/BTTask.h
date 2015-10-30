@@ -5,39 +5,40 @@
 #include "Utility.h"
 #include "BTClient.h"
 #include "BTDataManager.h"
+#include "DownloadTask.h"
+#include "BTDefine.h"
+using namespace BT;
 
-class CBTTask
+class CBTTask:public CDownloadTask
 {
 
 private:
 	friend class CBTClientChannel;
 public:
-	typedef std::vector<CBTClientChannel> BTClientChannelArray;
+	typedef std::vector<CBTClientChannel*> BTClientChannelArray;
 
 	typedef struct tagBTInfo
 	{
-		std::string	TorrentPath;
-		std::string	InfoHash;
-		int_64	FileSize;
-		int		PieceSize;
-	}BTInfo;
+        TorrentInfo Info;
+        std::string SavePath;
+	}TaskInfo;
 
 public:
-	CBTTask();
-	CBTTask(const BTInfo& Info);
+	CBTTask(const TaskInfo& Info);
 	~CBTTask();
 
-	bool Start();
-	void Stop();
+    virtual int Start();
+    virtual int Stop();
+    virtual int Run();
 
 private:
 	void Init();
 
 private:
-	BTInfo					m_BTInfo;
-	int						m_Status;		//ÁÙÊ±±£´æ×´Ì¬
+	TaskInfo					m_BTInfo;
 	BTClientChannelArray	m_ChannelArray;	
 	CBTDataManager*			m_DataManager;
+    CBTClientChannel*       m_pMainChannel;
 
 };
 #endif

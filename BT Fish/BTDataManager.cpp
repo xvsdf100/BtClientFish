@@ -2,9 +2,11 @@
 #include <algorithm>
 #include <assert.h>
 
-CBTDataManager::CBTDataManager()
+CBTDataManager::CBTDataManager(const BT::TorrentInfo& info,std::string strSavePath)
 {
 	m_hFile = INVALID_HANDLE_VALUE;
+    m_TorrentInfo = info;
+    m_strSavePath = strSavePath;
 }
 
 CBTDataManager::~CBTDataManager()
@@ -34,19 +36,13 @@ bool CBTDataManager::isComplete()
 //初始化
 void CBTDataManager::Init()
 {
-	//初始化，硬编码
-	m_TorrentInfo.FileSize = 48201;
-	m_TorrentInfo.InfoHash = "";
-	m_TorrentInfo.PieceCount = 2;
-	m_TorrentInfo.PieceSize = 16384*2;
-
 	m_DownloadStatusArray.resize(m_TorrentInfo.PieceCount);
 	for(uint_32 i = 0; i < m_TorrentInfo.PieceCount; i++)
 	{
 		m_DownloadStatusArray[i] = NONE;
 	}
 
-	HANDLE hFile = CreateFile(L"testBittorrent.txt",GENERIC_WRITE,NULL,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	HANDLE hFile = CreateFileA((LPCSTR)m_strSavePath.c_str(),GENERIC_WRITE,NULL,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(INVALID_HANDLE_VALUE != hFile)	
 	{
 		m_hFile = hFile;

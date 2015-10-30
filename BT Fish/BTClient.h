@@ -20,7 +20,7 @@
 
 
 class CBTTask;
-class CBTClientChannel:public BaseThread
+class CBTClientChannel
 {
 public:
 	enum NetType
@@ -58,7 +58,7 @@ public:
 
 	bool ConnectTo(std::string ip,int port);
 
-	virtual void Run();
+	virtual int Run();
 #ifndef _DEBUG 
 private:
 #endif

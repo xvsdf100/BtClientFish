@@ -8,6 +8,7 @@
 #include "CommBuffer.h"
 #include "BTTask.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -56,18 +57,25 @@ CBTFishDlg::CBTFishDlg(CWnd* pParent /*=NULL*/)
 	, m_InfoHash(_T(""))
 	, m_InfoPeerConfig(_T(""))
 	, m_PieceCount(1)
+    , m_ulPieceSize(0)
+    , m_IDownload(NULL)
+    , m_i64FileSize(0)
+    , m_strSavePath(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 void CBTFishDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_PORT, m_Port);
-	DDX_Text(pDX, IDC_EDIT_INFOHASH, m_InfoHash);
-	DDX_Text(pDX, IDC_EDIT_PEERCONFIG, m_InfoPeerConfig);
-	DDX_Control(pDX, IDC_IPADDRESS_PEER, m_IPCCtrl);
-	DDX_Text(pDX, IDC_EDIT_PIECECOUNT, m_PieceCount);
+    CDialog::DoDataExchange(pDX);
+    DDX_Text(pDX, IDC_EDIT_PORT, m_Port);
+    DDX_Text(pDX, IDC_EDIT_INFOHASH, m_InfoHash);
+    DDX_Text(pDX, IDC_EDIT_PEERCONFIG, m_InfoPeerConfig);
+    DDX_Control(pDX, IDC_IPADDRESS_PEER, m_IPCCtrl);
+    DDX_Text(pDX, IDC_EDIT_PIECECOUNT, m_PieceCount);
+    DDX_Text(pDX, IDC_EDIT1, m_ulPieceSize);
+    DDX_Text(pDX, IDC_EDIT2, m_i64FileSize);
+    DDX_Text(pDX, IDC_EDIT3, m_strSavePath);
 }
 
 BEGIN_MESSAGE_MAP(CBTFishDlg, CDialog)
@@ -113,6 +121,9 @@ BOOL CBTFishDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	InitUI();
+    
+    //下载出口初始化
+    InitDownload();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -172,14 +183,12 @@ void CBTFishDlg::OnBnClickedOk()
 	GetPeerInfoFormUI();
 	std::string ip = CW2A(m_PeerIP);
 	std::string InfoHash = CW2A(m_InfoHash);
+    std::string SavePath = CW2A(m_strSavePath);
 
-	//先测试阻塞
-	CBTTask::BTInfo info;
-	info.FileSize = 48201;
-	info.InfoHash = InfoHash;
-	info.PieceSize = 16384*2;
-	CBTTask* pTask = new CBTTask(info);
-	pTask->Start();
+    m_IDownload->Init(ip,m_Port);
+    m_IDownload->CreateBTTask(InfoHash,m_PieceCount,m_ulPieceSize,m_i64FileSize,SavePath,&m_hDownloadTask);
+    m_IDownload->StartTask(m_hDownloadTask);
+    
 }
 
 void CBTFishDlg::GetPeerInfoFormUI()
@@ -196,6 +205,10 @@ void CBTFishDlg::InitUI()
 	m_IPCCtrl.SetWindowText(_T("127.0.0.1"));
 	m_Port = 11038;
 	m_InfoHash = _T("b628a353e19abfd3e7671140bdb9dd06ff987f12");
+    m_PieceCount = 2;
+    m_ulPieceSize = 16384 * 2;
+    m_i64FileSize = 48201;
+    m_strSavePath = _T("D:\\MyTest.xml");
 	UpdateData(FALSE);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
 }
@@ -204,4 +217,10 @@ void CBTFishDlg::OnBnClickedBtnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//做关闭处理
+}
+
+bool CBTFishDlg::InitDownload()
+{
+    m_IDownload = GetIDownLoad();
+    return true;
 }

@@ -1,9 +1,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
-#ifdef _MSC_VER
-#include "stdafx.h"
-#endif
 
+
+#include "stdafx.h"
 #include "DataType.h"
 #include <vector>
 

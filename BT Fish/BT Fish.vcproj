@@ -466,6 +466,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Download"
+			>
+			<File
+				RelativePath=".\DownloadTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DownloadTask.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
@@ -474,7 +486,7 @@
 	<Globals>
 		<Global
 			Name="RESOURCE_FILE"
-			Value="BT Fish.rc"
+			Value="BTFish.rc"
 		/>
 	</Globals>
 </VisualStudioProject>

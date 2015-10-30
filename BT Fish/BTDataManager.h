@@ -17,7 +17,7 @@ public:
 
 	typedef std::vector<DataRangeDownStatus>	DownloadStatusArray;
 public:
-	CBTDataManager();
+    CBTDataManager(const BT::TorrentInfo& info,std::string strSavePath);
 	~CBTDataManager();
 
 	//是否是完整
@@ -41,6 +41,7 @@ private:
 	BT::TorrentInfo	m_TorrentInfo;
 	DownloadStatusArray	m_DownloadStatusArray;
 	HANDLE			m_hFile;
+    std::string     m_strSavePath;
 };
 
 
