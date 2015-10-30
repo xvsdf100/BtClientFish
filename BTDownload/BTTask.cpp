@@ -5,7 +5,6 @@
 CBTTask::CBTTask(const TaskInfo& Info)
 {
 	m_BTInfo = Info;
-	m_emTaskStatus = TS_NOITEM;
 	m_DataManager = NULL;
     m_pMainChannel = NULL;
     Init();

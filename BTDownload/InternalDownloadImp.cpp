@@ -100,7 +100,7 @@ void InternalDownloadImp::Run()
         for (TaskMap::iterator it = m_TaskMap.begin(); it != m_TaskMap.end(); it++)
         {
             pDownloadTask = it->second;
-            if(pDownloadTask->m_emTaskStatus == TS_START)
+            if(pDownloadTask->GetDownloadStatus() == TS_START)
             {
                 pDownloadTask->Run();
             }
