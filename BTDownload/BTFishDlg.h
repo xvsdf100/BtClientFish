@@ -31,6 +31,10 @@ private:
 
     bool InitDownload();
 
+	void LoadConfig();
+
+	void SaveConfig();
+
 private:
 	CBTClientChannel* m_pClient;
 // й╣ож
@@ -59,4 +63,5 @@ public:
     ULONGLONG m_i64FileSize;
     TASK_HANDLE m_hDownloadTask;
     CString m_strSavePath;
+	afx_msg void OnClose();
 };

@@ -64,6 +64,10 @@ void CBTClientChannel::SendRequest(uint_32 index,uint_32 begin,uint_32 len)
 	//暂时这样赋值,给最指定的值
 	m_Protocal.MakeRequest(index,begin,len,Buffer);
 	Write(&Buffer);
+
+	CString strMsg;
+	strMsg.Format(L"[CBTClientChannel::SendRequest]:len:%d,index:%d,begin:%d\n",len,index,begin);
+	TRACE(strMsg);
 }
 
 void CBTClientChannel::SendInteresed()
@@ -248,6 +252,8 @@ int CBTClientChannel::HandleBitfit(uint_32 len)
 
 		m_BtState = WaitPiece;
 
+		TRACE("[CBTClientChannel::HandleBitfit]");
+
 		//更新对方位图
 
 		//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
@@ -270,6 +276,7 @@ int CBTClientChannel::HandleBitfit(uint_32 len)
 
 int CBTClientChannel::HandleUnchoke(uint_32 len)
 {
+	TRACE("[CBTClientChannel::HandleUnchoke]");
 	if(len == 1)
 	{
 		m_ReadBuffer.Remove(0,5);
@@ -292,6 +299,9 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 
 	if(m_Protocal.DecodePiecePacket(&m_ReadBuffer,dataLen,index,begin,DataArray))
 	{
+		CString strMsg;
+		strMsg.Format(L"[CBTClientChannel::HandlePiece]:len:%d,index:%d,begin:%d\n",dataLen,index,begin);
+		TRACE(strMsg);
 		m_DownLoadByte += dataLen;
 		m_NeedRange.len -= dataLen;
         m_PieceBuffer.Write(&DataArray[0],DataArray.size(),DataArray.size());
@@ -306,6 +316,7 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 				if(m_pTask->m_DataManager->isComplete())
 				{
 					//触发关闭任务
+					TRACE("[CBTClientChannel::HandlePiece] 已经下载完成");
 					return 1;
 				}
 				//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。

@@ -445,6 +445,30 @@
 					</Filter>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="File"
+				>
+				<File
+					RelativePath=".\FileSystemUtility.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FileSystemUtility.h"
+					>
+				</File>
+				<Filter
+					Name="INI"
+					>
+					<File
+						RelativePath=".\IniFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\IniFile.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="½Ó¿Ú"

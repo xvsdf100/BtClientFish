@@ -29,4 +29,5 @@ bool GetInterSectionRange(const DataRange& range1,const DataRange& range2,DataRa
 #define WM_USER_LOG WM_USER + 5000
 #define LOG_INFO AfxGetMainWnd(X)->PostMessage(WM_USER_LOG,new CString(X));
 
+
 #endif

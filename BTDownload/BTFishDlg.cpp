@@ -7,7 +7,8 @@
 #include "BTFishDlg.h"
 #include "CommBuffer.h"
 #include "BTTask.h"
-
+#include "IniFile.h"
+#include "FileSystemUtility.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +86,7 @@ BEGIN_MESSAGE_MAP(CBTFishDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDOK, &CBTFishDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BTN_STOP, &CBTFishDlg::OnBnClickedBtnStop)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -120,9 +122,8 @@ BOOL CBTFishDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	LoadConfig();
 	InitUI();
-    
-    //下载出口初始化
     InitDownload();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -188,6 +189,8 @@ void CBTFishDlg::OnBnClickedOk()
     m_IDownload->Init(ip,m_Port);
     m_IDownload->CreateBTTask(InfoHash,m_PieceCount,m_ulPieceSize,m_i64FileSize,SavePath,&m_hDownloadTask);
     m_IDownload->StartTask(m_hDownloadTask);
+
+	SaveConfig();
     
 }
 
@@ -202,14 +205,8 @@ void CBTFishDlg::GetPeerInfoFormUI()
 
 void CBTFishDlg::InitUI()
 {
-	m_IPCCtrl.SetWindowText(_T("127.0.0.1"));
-	m_Port = 11038;
-	m_InfoHash = _T("b628a353e19abfd3e7671140bdb9dd06ff987f12");
-    m_PieceCount = 2;
-    m_ulPieceSize = 16384 * 2;
-    m_i64FileSize = 48201;
-    m_strSavePath = _T("D:\\MyTest.xml");
 	UpdateData(FALSE);
+	m_IPCCtrl.SetWindowText(m_PeerIP);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
 }
 
@@ -223,4 +220,42 @@ bool CBTFishDlg::InitDownload()
 {
     m_IDownload = GetIDownLoad();
     return true;
+}
+
+void CBTFishDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CDialog::OnClose();
+}
+
+void CBTFishDlg::LoadConfig()
+{
+	CString strSectionName = L"BT";
+	CString strPath = FileSystem::GetCurrentMoudlePath();
+	strPath += L"\\BTSetting.ini";
+	CINIFile ini(strPath);
+
+	m_PeerIP = ini.GetString(strSectionName,L"IP");
+	m_Port = ini.GetInt(strSectionName,L"Port");
+	m_InfoHash = ini.GetString(strSectionName,L"Infohash");
+	m_PieceCount = ini.GetInt(strSectionName,L"PieceNum");
+	m_ulPieceSize = ini.GetInt(strSectionName,L"PieceSize");
+	m_i64FileSize = ini.GetInt64(strSectionName,L"FileSize");
+	m_strSavePath =ini.GetString(strSectionName,L"SavePath");
+}
+
+void CBTFishDlg::SaveConfig()
+{
+	CString strSectionName = L"BT";
+	CString strPath = FileSystem::GetCurrentMoudlePath();
+	strPath += L"\\BTSetting.ini";
+	CINIFile ini(strPath);
+	
+	ini.SetString(strSectionName,L"IP",m_PeerIP);
+	ini.SetInt(strSectionName,L"Port",m_Port);
+	ini.SetString(strSectionName,L"Infohash",m_InfoHash);
+	ini.SetInt(strSectionName,L"PieceNum",m_PieceCount);
+	ini.SetInt(strSectionName,L"PieceSize",m_ulPieceSize);
+	ini.SetInt64(strSectionName,L"FileSize",m_i64FileSize);
+	ini.SetString(strSectionName,L"SavePath",m_strSavePath);
 }
