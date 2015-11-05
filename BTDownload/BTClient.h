@@ -112,19 +112,6 @@ private:
 
     void Close();
 
-	void InitLocalBitmap();
-
-private:
-	//文件出列测试
-	bool InitDownFile();
-
-	bool WriteDataFile(int_64 pos,int_32 len,const byte* data);
-
-	//全部写0写初始化数据
-	bool WriteInitData();
-
-	void CloseFile();
-
 private:
 	CBTTask*				m_pTask;
 	bool		            m_isConnect;

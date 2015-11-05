@@ -1,6 +1,6 @@
 #include "InternalDownloadImp.h"
 #include "BTTask.h"
-
+#include <assert.h>
 
 //extern й╣ож
 extern "C" IDownLoad* GetIDownLoad()

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TcpConnetorImp.h"
-
+#include <assert.h>
 
 CTcpConnectImp::CTcpConnectImp()
 {

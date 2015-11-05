@@ -153,6 +153,7 @@ int CBTClientChannel::Run()
 void CBTClientChannel::ProcessPacket()
 {
 
+	//处理完数据
     while (m_ReadBuffer.GetDataSize())
     {
         int ret = 0;
@@ -161,15 +162,16 @@ void CBTClientChannel::ProcessPacket()
         case WaitHand:
             //处理握手数据包
             ret = HandleHandMsg();
-            break;
+            break;;
+
         case WaitMsg:
         case WaitPiece:
             //处理消息数据包
             ret = HandleCmdMsg();
-            break;
+            break;;
         }
 
-        if(1 != ret)    break;
+        if(RESULT_SUCESS != ret)    break;
     }
 }
 
@@ -191,14 +193,16 @@ int CBTClientChannel::HandleHandMsg()
 		m_ReadBuffer.ReadString(PeerID,20);
 		
 		m_BtState = WaitMsg;
+
+		return RESULT_SUCESS;
 	}
 
-	return 1;
+	return RESULT_FAILD;
 }
 
 int CBTClientChannel::HandleCmdMsg()
 {
-	int ret = 0;
+	int ret = RESULT_FAILD;
 	uint_8 MinCmdSize = 4 + 1; //最小命令的长度 len + id
     uint_32 DataSize = m_ReadBuffer.GetDataSize();
 	if(DataSize >= MinCmdSize)
@@ -225,6 +229,7 @@ int CBTClientChannel::HandleCmdMsg()
 				ret = HandleUnchoke(len);
 				break;
             default:
+				//位置协议要跳转
                 AfxMessageBox(_T("协议未知报错"));
                 break;
 			}
@@ -270,7 +275,7 @@ int CBTClientChannel::HandleBitfit(uint_32 len)
 		}
 	}
 
-	return 1;
+	return RESULT_SUCESS;
 }
 
 
@@ -283,10 +288,10 @@ int CBTClientChannel::HandleUnchoke(uint_32 len)
 		m_SelfChokeStatus = UnChoke;
 		uint_32 ulen = m_NeedRange.len <= 16*1024 ? m_NeedRange.len : 16*1024;
 		SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
-		return 1;
+		return RESULT_SUCESS;
 	}
 
-	return -1;
+	return RESULT_FAILD;
 }
 
 
@@ -332,7 +337,6 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 
 			}
             m_PieceBuffer.Clear();
-            return 1;
 		}
 		else
 		{
@@ -340,10 +344,10 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 			SendRequest(m_NeedRange.index,m_DownLoadByte,ulen);
 		}
 
-        
-
+        return RESULT_SUCESS;
 	}
-	return -1;
+
+	return RESULT_FAILD;
 }
 
 uint_32 CBTClientChannel::Write( BaseBuffer* buffer )
@@ -416,30 +420,6 @@ void CBTClientChannel::Close()
     m_isConnect = false;
 }
 
-void CBTClientChannel::InitLocalBitmap()
-{
-	
-}
-
-bool CBTClientChannel::InitDownFile()
-{
-	return true;
-}
-
-bool CBTClientChannel::WriteDataFile(int_64 pos,int_32 len,const byte* data)
-{
 
 
-	return true;
-}
-
-bool CBTClientChannel::WriteInitData()
-{
-	return true;
-}
-
-void CBTClientChannel::CloseFile()
-{
-
-}
 

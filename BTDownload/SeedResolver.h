@@ -56,7 +56,7 @@ struct _BC_Node;//树的节点声明，定义在下面
 /* 仿函数 */
 struct CompareKey
 {
-	BOOL operator() (const char* psz1, const char* psz2)
+	bool operator() (const char* psz1, const char* psz2) const
 	{
 		return strcmp(psz1, psz2) < 0;//严格弱排序，只有在psz1小于psz2时才返回TRUE
 	}
