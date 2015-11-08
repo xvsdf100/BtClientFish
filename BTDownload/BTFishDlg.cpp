@@ -191,8 +191,21 @@ void CBTFishDlg::OnBnClickedOk()
     m_IDownload->StartTask(m_hDownloadTask);
 
 	SaveConfig();
-    
+
+    EableWnd(IDOK,FALSE);
+	EableWnd(IDC_BTN_STOP,TRUE);
 }
+
+
+void CBTFishDlg::OnBnClickedBtnStop()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_IDownload->StopTask(m_hDownloadTask);
+
+	EableWnd(IDOK,TRUE);
+	EableWnd(IDC_BTN_STOP,FALSE);
+}
+
 
 void CBTFishDlg::GetPeerInfoFormUI()
 {
@@ -208,12 +221,6 @@ void CBTFishDlg::InitUI()
 	UpdateData(FALSE);
 	m_IPCCtrl.SetWindowText(m_PeerIP);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(FALSE);
-}
-
-void CBTFishDlg::OnBnClickedBtnStop()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//做关闭处理
 }
 
 bool CBTFishDlg::InitDownload()
@@ -258,4 +265,24 @@ void CBTFishDlg::SaveConfig()
 	ini.SetInt(strSectionName,L"PieceSize",m_ulPieceSize);
 	ini.SetInt64(strSectionName,L"FileSize",m_i64FileSize);
 	ini.SetString(strSectionName,L"SavePath",m_strSavePath);
+}
+
+
+
+void CBTFishDlg::EableWnd(int iID, BOOL bTrue )
+{
+	CWnd* pWnd = this->GetDlgItem(iID);
+	if(NULL == pWnd)	return;
+
+	if(pWnd->IsWindowEnabled()&&!bTrue)
+	{
+		pWnd->EnableWindow(FALSE);
+		return;
+	}
+
+	if(!pWnd->IsWindowEnabled()&&bTrue)
+	{
+		pWnd->EnableWindow(TRUE);
+		return;
+	}
 }

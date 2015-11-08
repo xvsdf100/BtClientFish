@@ -376,6 +376,14 @@
 					RelativePath=".\BaseThread.h"
 					>
 				</File>
+				<File
+					RelativePath=".\ThreadHelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ThreadHelper.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Buffer"

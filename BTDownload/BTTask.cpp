@@ -45,6 +45,7 @@ int CBTTask::Start()
 int CBTTask::Stop()
 {
     m_emTaskStatus = TS_STOP;
+	SAFEDEL(m_pMainChannel);
     return 0;
 }
 

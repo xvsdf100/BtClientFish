@@ -36,6 +36,10 @@ private:
 	void SaveConfig();
 
 private:
+	//helper Function
+	void EableWnd(int iID, BOOL bTrue = TRUE);
+
+private:
 	CBTClientChannel* m_pClient;
 // й╣ож
 protected:

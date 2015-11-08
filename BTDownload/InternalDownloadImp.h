@@ -46,9 +46,11 @@ private:
     bool AddTask(TASK_HANDLE hTask,CDownloadTask* pTask);
     bool isValidTaskHandle(TASK_HANDLE hTask);
 private:
+
+	CCriticalSection    m_SectionLock;
+
 	TaskMap		        m_TaskMap;
     bool                m_bStop;
-    CCriticalSection    m_SectionLock;
     HANDLE              m_hTread;
     std::string         m_strIP;
     uint_16             m_u16Port;

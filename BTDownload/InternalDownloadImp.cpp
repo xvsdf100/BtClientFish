@@ -22,6 +22,7 @@ InternalDownloadImp::~InternalDownloadImp()
 
 int InternalDownloadImp::Init(std::string ip,uint_16 port)
 {
+	Log_Debug("[InternalDownloadImp::Init]");
     m_hTread = (HANDLE)_beginthread(InternalDownloadImp::DownLoadLoop,0,this);
 
     if(INVALID_HANDLE_VALUE == m_hTread)    
@@ -47,6 +48,7 @@ int InternalDownloadImp::CreateBTTask( std::string strInfoHash,int PieceCount,in
 {
     if(strInfoHash.empty() || 0 == PieceCount || 0 == PieceSize || 0 == FileSize || NULL == hTask) return 1;
 
+	ThreadHelper::AutoLock autoLock(&m_SectionLock);
     CBTTask::TaskInfo info;
     info.SavePath = strPath;
     info.Info.FileSize = FileSize;
@@ -61,18 +63,22 @@ int InternalDownloadImp::CreateBTTask( std::string strInfoHash,int PieceCount,in
 	return 0;
 }
 
+//Ìæ»»
 int InternalDownloadImp::StartTask( TASK_HANDLE hTask )
 {
+	ThreadHelper::AutoLock autoLock(&m_SectionLock);
     if(isValidTaskHandle(hTask))
     {
         CDownloadTask* pTask = (CDownloadTask*)hTask;
         return pTask->Start();
     }
+
 	return 1;
 }
 
 int InternalDownloadImp::StopTask( TASK_HANDLE hTask )
 {
+	ThreadHelper::AutoLock autoLock(&m_SectionLock);
     if(isValidTaskHandle(hTask))
     {
         CDownloadTask* pTask = (CDownloadTask*)hTask;
@@ -83,6 +89,7 @@ int InternalDownloadImp::StopTask( TASK_HANDLE hTask )
 
 int InternalDownloadImp::DeleteTask( TASK_HANDLE hTask )
 {
+	ThreadHelper::AutoLock autoLock(&m_SectionLock);
 	return 0;
 }
 
@@ -100,7 +107,8 @@ void InternalDownloadImp::Run()
         for (TaskMap::iterator it = m_TaskMap.begin(); it != m_TaskMap.end(); it++)
         {
             pDownloadTask = it->second;
-            if(pDownloadTask->GetDownloadStatus() == TS_START)
+			TASK_DOWN_STATUS status = pDownloadTask->GetDownloadStatus();
+            if(status == TS_START)
             {
                 pDownloadTask->Run();
             }

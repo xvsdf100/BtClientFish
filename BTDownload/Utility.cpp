@@ -52,3 +52,16 @@ bool GetInterSectionRange( const DataRange& range1,const DataRange& range2,DataR
 
     return false;
 }
+
+void Log_Debug(const char *format, ...)
+{
+	std::string strMsg;
+	strMsg.resize(1024*8);
+	
+	va_list arglist;
+	va_start(arglist, format);
+	_vsprintf_s_l((char*)strMsg.c_str(), strMsg.capacity(), format, NULL, arglist);
+
+	strMsg += "\n";
+	OutputDebugStringA(strMsg.c_str());
+}

@@ -5,12 +5,13 @@
 #include "stdafx.h"
 #include "DataType.h"
 #include <vector>
+#include "ThreadHelper.h"
 
-#define SAFEDEL(x) if(NULL == x)    {delete x; x = NULL;}
+#define SAFEDEL(x) if(NULL != x)    {delete x; x = NULL;}
 
 typedef	struct tagDataRange
 {
-	int_64	pos;
+	uint_64	pos;
 	uint_32	len;
 	uint_32 index;
 }DataRange;
@@ -29,4 +30,5 @@ bool GetInterSectionRange(const DataRange& range1,const DataRange& range2,DataRa
 #define WM_USER_LOG WM_USER + 5000
 #define LOG_INFO AfxGetMainWnd(X)->PostMessage(WM_USER_LOG,new CString(X));
 
+void Log_Debug(const char *format, ...);
 #endif

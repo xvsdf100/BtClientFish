@@ -25,7 +25,7 @@ CBTClientChannel::CBTClientChannel(CBTTask* task, NetType type,const std::string
 
 CBTClientChannel::~CBTClientChannel()
 {
-	
+	Close();
 }
 
 bool CBTClientChannel::ConnectTo(std::string ip,int port)
@@ -38,16 +38,18 @@ bool CBTClientChannel::ConnectTo(std::string ip,int port)
 		if(SOCKET_ERROR == bError)
 		{
 			bError = WSAGetLastError();
-            char MsgError[100];
-            sprintf(MsgError,"[CBTClientChannel::ConnectTo] Error:%d\n",bError);
-            TRACE(MsgError);
+			Log_Debug("[CBTClientChannel::ConnectTo] Error:%d",bError);
+
 		}
 	}
+
+	Log_Debug("[CBTClientChannel::ConnectTo] Ok");
 	return bVal;
 }
 
 void CBTClientChannel::SendHandle()
 {
+	Log_Debug("[CBTClientChannel::SendHandle]");
 	CommBuffer Buffer;
 	m_Protocal.MakeHandle(Buffer);
     Write(&Buffer);
@@ -60,14 +62,10 @@ void CBTClientChannel::SendBitFiled()
 
 void CBTClientChannel::SendRequest(uint_32 index,uint_32 begin,uint_32 len)
 {
+	Log_Debug("[CBTClientChannel::SendRequest]: index:%d begin:%d len:%d",index,begin,len);
 	CommBuffer Buffer;
-	//暂时这样赋值,给最指定的值
 	m_Protocal.MakeRequest(index,begin,len,Buffer);
 	Write(&Buffer);
-
-	CString strMsg;
-	strMsg.Format(L"[CBTClientChannel::SendRequest]:len:%d,index:%d,begin:%d\n",len,index,begin);
-	TRACE(strMsg);
 }
 
 void CBTClientChannel::SendInteresed()
@@ -96,7 +94,6 @@ void CBTClientChannel::SendUnChoke()
 
 int CBTClientChannel::Run()
 {
-
     WSANETWORKEVENTS pEvents;
     BOOL bRet = WSAEnumNetworkEvents( (SOCKET)m_pConnect->GetHandle(), m_NetEvent, &pEvents );
     if(0!=bRet)
@@ -114,7 +111,7 @@ int CBTClientChannel::Run()
         {
             closesocket((SOCKET)m_pConnect->GetHandle());
             m_isConnect = false;
-            AfxMessageBox(L"连接断开");
+			Log_Debug("[CBTClientChannel::Run] 连接断开");
             return 1;
         }
         else
@@ -135,14 +132,14 @@ int CBTClientChannel::Run()
     //如果有数据就发送数据
     if(!WritePacket())   
     {
-        AfxMessageBox(_T("write client disconnect"));
+        Log_Debug("write client disconnect");
         return 1;
     }
 
     //如果没有读取到新的数据就不需要读取
     if(!ReadPacket())
     {
-        AfxMessageBox(_T("read client disconnect"));
+       Log_Debug("read client disconnect");
        return 1;
     }
 
@@ -193,10 +190,12 @@ int CBTClientChannel::HandleHandMsg()
 		m_ReadBuffer.ReadString(PeerID,20);
 		
 		m_BtState = WaitMsg;
-
+	
+		Log_Debug("[CBTClientChannel::HandleHandMsg]: Ok");
 		return RESULT_SUCESS;
 	}
 
+	Log_Debug("[CBTClientChannel::HandleHandMsg]: Faild");
 	return RESULT_FAILD;
 }
 
@@ -212,7 +211,7 @@ int CBTClientChannel::HandleCmdMsg()
 		m_ReadBuffer.ReadInt32(len,false);
 		len = ntohl(len);
 		m_ReadBuffer.ReadInt8(id,false,sizeof(len));
-        TRACE("[CBTClientNet::HandleCmdMsg] MSG ID:%d ReadBuffer:%d CmdLen:%d\n",id,DataSize,len);
+        Log_Debug("[CBTClientNet::HandleCmdMsg] MSG ID:%d ReadBuffer:%d CmdLen:%d\n",id,DataSize,len);
 
 		//检测是否为一个完整的数据包
 		if(DataSize >= (len + sizeof(len)))
@@ -281,7 +280,7 @@ int CBTClientChannel::HandleBitfit(uint_32 len)
 
 int CBTClientChannel::HandleUnchoke(uint_32 len)
 {
-	TRACE("[CBTClientChannel::HandleUnchoke]");
+	Log_Debug("[CBTClientChannel::HandleUnchoke]");
 	if(len == 1)
 	{
 		m_ReadBuffer.Remove(0,5);
@@ -304,9 +303,8 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 
 	if(m_Protocal.DecodePiecePacket(&m_ReadBuffer,dataLen,index,begin,DataArray))
 	{
-		CString strMsg;
-		strMsg.Format(L"[CBTClientChannel::HandlePiece]:len:%d,index:%d,begin:%d\n",dataLen,index,begin);
-		TRACE(strMsg);
+		Log_Debug("[CBTClientChannel::HandlePiece]: len:%d,index:%d,begin:%d",dataLen,index,begin);
+
 		m_DownLoadByte += dataLen;
 		m_NeedRange.len -= dataLen;
         m_PieceBuffer.Write(&DataArray[0],DataArray.size(),DataArray.size());
@@ -321,7 +319,7 @@ int CBTClientChannel::HandlePiece(uint_32 len)
 				if(m_pTask->m_DataManager->isComplete())
 				{
 					//触发关闭任务
-					TRACE("[CBTClientChannel::HandlePiece] 已经下载完成");
+					Log_Debug("[CBTClientChannel::HandlePiece] 已经下载完成");
 					return 1;
 				}
 				//获取自己需要下载的位图，以后加上通过对方的位图来获取自己可以从对方下载哪些位图，然后再下载。
@@ -415,6 +413,7 @@ bool CBTClientChannel::WritePacket()
 
 void CBTClientChannel::Close()
 {
+	Log_Debug("[CBTClientChannel::Close]");
     m_pConnect->Close();
     SAFEDEL(m_pConnect);
     m_isConnect = false;
